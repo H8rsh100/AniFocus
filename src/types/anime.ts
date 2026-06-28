@@ -24,7 +24,7 @@ export interface AnimeItem {
 
 export interface UserProfile {
   username: string;
-  level: 'Anime Rookie' | 'Otaku Explorer' | 'Anime Scholar' | 'Season Hunter' | 'Legendary Weeb' | 'Anime Grandmaster';
+  level: '見習い' | '中級者' | '上級者' | 'オタク神';
   xp: number;
   streak: number;
   completedCount: number;

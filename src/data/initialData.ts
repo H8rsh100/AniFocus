@@ -4,7 +4,7 @@ export const INITIAL_ANIME: AnimeItem[] = [];
 
 export const INITIAL_PROFILE: UserProfile = {
   username: 'Harsh',
-  level: 'Anime Rookie',
+  level: '見習い',
   xp: 0,
   streak: 0,
   completedCount: 0,
@@ -57,32 +57,26 @@ export const INITIAL_ACHIEVEMENTS: Achievement[] = [
 ];
 
 export function getLevelFromXp(xp: number): UserProfile['level'] {
-  if (xp < 200) return 'Anime Rookie';
-  if (xp < 600) return 'Otaku Explorer';
-  if (xp < 1200) return 'Anime Scholar';
-  if (xp < 2000) return 'Season Hunter';
-  if (xp < 3500) return 'Legendary Weeb';
-  return 'Anime Grandmaster';
+  if (xp < 500) return '見習い';
+  if (xp < 2000) return '中級者';
+  if (xp < 5000) return '上級者';
+  return 'オタク神';
 }
 
 export function getNextLevelXp(level: UserProfile['level']): number {
   switch (level) {
-    case 'Anime Rookie': return 200;
-    case 'Otaku Explorer': return 600;
-    case 'Anime Scholar': return 1200;
-    case 'Season Hunter': return 2000;
-    case 'Legendary Weeb': return 3500;
-    default: return 5000; // Grandmaster cap or max
+    case '見習い': return 500;
+    case '中級者': return 2000;
+    case '上級者': return 5000;
+    default: return 10000;
   }
 }
 
 export function getPrevLevelXp(level: UserProfile['level']): number {
   switch (level) {
-    case 'Anime Rookie': return 0;
-    case 'Otaku Explorer': return 200;
-    case 'Anime Scholar': return 600;
-    case 'Season Hunter': return 1200;
-    case 'Legendary Weeb': return 2000;
-    default: return 3500;
+    case '見習い': return 0;
+    case '中級者': return 500;
+    case '上級者': return 2000;
+    default: return 5000;
   }
 }
