@@ -22,22 +22,26 @@ AniFocus is not another standard bootstrap dashboard. It is a high-information, 
 
 ## ⚡ Technical Capabilities
 
-### 1. Instant Autocomplete Database (100+ Curated Series)
-* **Minimum Input Trigger**: Activates dynamically at `2+` letters to prevent layout shift.
-* **In-place Selection Expansion**: Parses series metadata (seasons, movies, specials, OVAs) and allows importing specific releases to the watch list in exactly **1-click**.
+### 1. Smart Autocomplete Database Search & Manual Prefill Form
+* **Minimum Input Trigger**: Activates dynamically at `2+` letters to search 100+ anime titles and releases.
+* **Smart Movie/OVA Parser**: Automatically detects specials, movies, or OVAs, setting their total episode count to `1` (e.g. *Jujutsu Kaisen 0* is parsed as `1 Movie` instead of defaulting to 12).
+* **Collapsing Suggestions Drawer**: Clicking `SELECT` on any release automatically populates the manual configuration form and closes the autocomplete panel instantly.
+* **Granular Priority & List Selection**: Prefilled fields let you choose between **Active Watching**, **Plan to Watch** (with Kanban priorities: High, Interested, Maybe Later), or **Completed Collection** statuses before importing.
 
-### 2. Focus Chamber (20m Countdown & Binaural Beats Synthesizer)
+### 2. Focus Chamber (Binaural Beats & Brownian Noise Synthesizer)
+* **Progress Visualization**: Features an elegant circular progress ring displaying active series completion percentage (e.g. `57% Complete`).
 * **Real-time Synthesis**: No static MP3 files. Uses the **Web Audio API** to procedurally synthesize a binary soundscape:
   * **Theta Binaural Beats**: Dual sine wave oscillators (130Hz Left / 134Hz Right) generating a 4Hz brainwave rhythm to enhance concentration.
   * **Deep Brownian Noise**: Algorithmic accumulation buffer generating analog deep waterfall noise for environmental masking.
-* **Tab-Switch Attention Tracker**: Active listeners monitor tab state. Leaving or switching tabs while the timer runs triggers a **−30 XP penalty** accompanied by a procedural sawtooth audio alert and a crimson flashing warning banner.
+* **Active State Sync**: Exiting Focus Mode seamlessly navigates you back to the Dashboard while preserving your active target as the **Continue Watching** focus series.
 
-### 3. Gamified Otaku Ranks
-Features dynamic rank calculation based on accumulated session XP:
-* **見習い** (Apprentice) — `0 - 499 XP`
-* **中級者** (Intermediate) — `500 - 1999 XP`
-* **上級者** (Advanced) — `2000 - 4999 XP`
-* **オタク神** (Otaku God) — `5000+ XP`
+### 3. Gamified Otaku Ranks & Trophy Room
+* Features dynamic rank calculation based on accumulated session XP:
+  * **見習い** (Apprentice) — `0 - 499 XP`
+  * **中級者** (Intermediate) — `500 - 1999 XP`
+  * **上級者** (Advanced) — `2000 - 4999 XP`
+  * **オタク神** (Otaku God) — `5000+ XP`
+* **Trophy Room**: Tracks all completed series including completion dates, ratings, and reviews logged directly during completed imports. Supports deletion/removal options with a warning prompt to correct mistaken entries.
 
 ---
 
@@ -51,15 +55,15 @@ src/
 ├── components/
 │   ├── Sidebar.tsx      # Vertical Navigation Hub
 │   ├── Dashboard.tsx    # Continue Watching & Kanban Category Columns
-│   ├── FocusMode.tsx    # 20-minute Timer, Web Audio Synth, Binaural Nodes
-│   ├── TrophyRoom.tsx   # Hanako Achievements Registry
+│   ├── FocusMode.tsx    # Progress Ring, Web Audio Synth, Binaural Nodes
+│   ├── TrophyRoom.tsx   # Unlocked Achievements & Completed trophies
 │   ├── Statistics.tsx   # Progress Analytics charts
 │   └── Graveyard.tsx    # Dropped series rehabilitation
 ├── data/
-│   ├── animeDatabase.ts # Registry of 94 populated series and movies
+│   ├── animeDatabase.ts # Registry of 100+ preloaded series and movies
 │   └── initialData.ts   # Otaku Rank boundaries & profile starters
 └── types/
-    └── anime.ts         # UserProfile and KanbanCategory typings
+│   └── anime.ts         # UserProfile and KanbanCategory typings
 ```
 
 ---
