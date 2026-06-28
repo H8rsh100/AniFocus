@@ -46,9 +46,14 @@ export default function Home() {
   // Modals state
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [levelUpModal, setLevelUpModal] = useState<{ oldLevel: string; newLevel: string } | null>(null);
+  
+  // Focus system state
+  const [isFocusTimerActive, setIsFocusTimerActive] = useState(false);
+  const [tabSwitchAlert, setTabSwitchAlert] = useState(false);
 
   // Form State for Add Anime
   const [searchQuery, setSearchQuery] = useState('');
+  const [expandedSearchId, setExpandedSearchId] = useState<string | null>(null);
   const [formTitle, setFormTitle] = useState('');
   const [formTotalEps, setFormTotalEps] = useState(12);
   const [formStatus, setFormStatus] = useState<AnimeItem['status']>('watching');
@@ -98,6 +103,110 @@ export default function Home() {
       setActiveFocusId(storedFocus);
     }
   }, []);
+
+  // Hook into tab changes to detect focus breaks
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden' && isFocusTimerActive) {
+        // Deduct -30 XP for leaving the war room
+        setProfile(prev => {
+          const newXp = Math.max(0, prev.xp - 30);
+          const newLevel = getLevelFromXp(newXp);
+          const updated = { ...prev, xp: newXp, level: newLevel };
+          localStorage.setItem('anifocus_profile', JSON.stringify(updated));
+          return updated;
+        });
+
+        // Trigger procedural web audio alarm feedback
+        try {
+          const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(140, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(70, audioCtx.currentTime + 0.6);
+          gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.6);
+        } catch (e) {
+          console.warn("Audio warning failed:", e);
+        }
+
+        setTabSwitchAlert(true);
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [isFocusTimerActive]);
+
+  // Focus completion handler
+  const handleFocusSessionComplete = () => {
+    // Complete session gives +150 XP
+    const result = addXp(150, profile, achievements);
+    setProfile(result.profile);
+    
+    // Check and unlock focus master achievement
+    const today = new Date().toISOString().split('T')[0];
+    const updatedAchievements = result.achievements.map(ach => {
+      if (ach.id === 'focus_master' && !ach.unlockedAt) {
+        return { ...ach, unlockedAt: today };
+      }
+      return ach;
+    });
+    
+    setAchievements(updatedAchievements);
+    saveState(animeList, result.profile, updatedAchievements);
+
+    confetti({
+      particleCount: 200,
+      spread: 100,
+      origin: { y: 0.5 }
+    });
+  };
+
+  // Direct import selection handler
+  const handleDirectAdd = (title: string, totalEps: number, genres: string[], synopsis: string) => {
+    const id = title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') + '-' + Date.now();
+    const randomChance = Math.floor(Math.random() * 25) + 65; 
+
+    const newAnime: AnimeItem = {
+      id,
+      title,
+      coverUrl: '',
+      currentEp: 0,
+      totalEps: totalEps || 12,
+      hoursPerEp: 0.4,
+      status: 'watching',
+      genres: genres.length > 0 ? genres : ['Action'],
+      synopsis: synopsis || 'Imported watch target initiated.',
+      probabilityOfCompleting: randomChance,
+      motivationNudge: `Focus session initialized for ${title}. Log episodes to progress!`
+    };
+
+    const updatedList = [newAnime, ...animeList];
+    const result = addXp(50, profile, achievements); // +50 XP for importing
+
+    setAnimeList(updatedList);
+    setProfile(result.profile);
+    setAchievements(result.achievements);
+    saveState(updatedList, result.profile, result.achievements);
+
+    setIsAddModalOpen(false);
+    setSearchQuery('');
+    setExpandedSearchId(null);
+
+    confetti({
+      particleCount: 100,
+      spread: 75,
+      origin: { y: 0.6 }
+    });
+  };
 
   // Save to LocalStorage helper
   const saveState = (updatedAnime: AnimeItem[], updatedProfile: UserProfile, updatedAchievements: Achievement[]) => {
@@ -438,8 +547,8 @@ export default function Home() {
     setSearchQuery(''); // Close suggestion panel
   };
 
-  // Filter 50-anime Database
-  const filteredDatabase = searchQuery.trim() !== ''
+  // Filter Anime Database (requires at least 2 characters)
+  const filteredDatabase = searchQuery.trim().length >= 2
     ? ANIME_DATABASE.filter(a => a.title.toLowerCase().includes(searchQuery.toLowerCase()) || a.genres.some(g => g.toLowerCase().includes(searchQuery.toLowerCase())))
     : [];
 
@@ -448,6 +557,24 @@ export default function Home() {
       
       {/* SCANLINES OVERLAY */}
       <div className="absolute inset-0 scanlines pointer-events-none opacity-20"></div>
+
+      {/* TAB SWITCH BREAK DETECTED BANNER */}
+      {tabSwitchAlert && (
+        <div className="fixed top-0 left-0 right-0 bg-[#e8003a] border-b-2 border-[#f5c842] text-white py-3 px-4 z-50 shadow-2xl flex items-center justify-between animate-pulse">
+          <div className="flex items-center gap-2">
+            <span className="hanko-stamp-gold text-[10px]">WARNING</span>
+            <span className="font-bebas tracking-wider text-sm md:text-base">
+              FOCUS BREAK DETECTED — TAB OUT OF BOUNDS. PENALTY INCURRED: −30 XP DEDUCTED.
+            </span>
+          </div>
+          <button 
+            onClick={() => setTabSwitchAlert(false)}
+            className="px-2 py-0.5 bg-zinc-950 border border-white/20 hover:border-white font-mono text-[10px] text-white hover:bg-zinc-900 transition-all rounded cursor-pointer"
+          >
+            DISMISS
+          </button>
+        </div>
+      )}
 
       {/* SIDEBAR */}
       <Sidebar 
@@ -522,6 +649,9 @@ export default function Home() {
               setActiveFocusId={handleSetFocusId}
               onUpdateEpisode={handleUpdateEpisode}
               onUpdateStatus={handleUpdateStatus}
+              isFocusTimerActive={isFocusTimerActive}
+              setIsFocusTimerActive={setIsFocusTimerActive}
+              onFocusSessionComplete={handleFocusSessionComplete}
             />
           )}
 
@@ -573,14 +703,14 @@ export default function Home() {
             <div className="space-y-1.5 mb-6 relative">
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1">
                 <Search className="w-3.5 h-3.5 text-primary-purple" />
-                Quick Import from Database (50 Popular Series)
+                Quick Import from Database (100+ Series & Movies)
               </label>
               <div className="relative">
                 <input 
                   type="text" 
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search: e.g. Titan, Demon, Luffy, Movie..."
+                  onChange={(e) => { setSearchQuery(e.target.value); setExpandedSearchId(null); }}
+                  placeholder="Search: type 2+ letters (e.g. Titan, Solo, Frieren...)"
                   className="w-full bg-zinc-900 border border-zinc-800/80 rounded-xl p-3 pl-10 text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-neon-blue transition-all"
                 />
                 <Search className="absolute left-3.5 top-3.5 w-4 h-4 text-zinc-600" />
@@ -588,27 +718,63 @@ export default function Home() {
 
               {/* SEARCH RESULTS DROPDOWN */}
               {filteredDatabase.length > 0 && (
-                <div className="absolute left-0 right-0 top-[64px] z-20 max-h-56 overflow-y-auto bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 shadow-2xl space-y-1 scrollbar-thin">
+                <div className="absolute left-0 right-0 top-[64px] z-20 max-h-72 overflow-y-auto bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 shadow-2xl space-y-1.5 scrollbar-thin">
                   <p className="text-[9px] text-gray-600 uppercase font-black tracking-widest px-2 pb-1.5 border-b border-zinc-900/60">
-                    Matches Found ({filteredDatabase.length})
+                    Matches Found ({filteredDatabase.length}) — Click to expand seasons
                   </p>
                   {filteredDatabase.map((anime) => (
                     <div 
                       key={anime.id}
-                      onClick={() => handleQuickImport(anime)}
-                      className="flex items-center justify-between p-2 rounded-lg hover:bg-zinc-900 cursor-pointer transition-all border border-transparent hover:border-zinc-800 group"
+                      className="border border-zinc-900 hover:border-zinc-800 rounded-lg p-2 bg-zinc-950/40 transition-all"
                     >
-                      <div className="min-w-0 pr-4">
-                        <p className="text-xs font-bold text-white group-hover:text-primary-purple-hover transition-colors truncate">
-                          {anime.title}
-                        </p>
-                        <p className="text-[9px] text-gray-500 font-semibold truncate mt-0.5">
-                          {anime.genres.join(' • ')}
-                        </p>
+                      <div 
+                        onClick={() => setExpandedSearchId(expandedSearchId === anime.id ? null : anime.id)}
+                        className="flex items-center justify-between cursor-pointer hover:bg-zinc-900/30 p-1 rounded transition-all group"
+                      >
+                        <div className="min-w-0 pr-4">
+                          <p className="text-xs font-bold text-white group-hover:text-primary-purple-hover transition-colors truncate">
+                            {anime.title}
+                          </p>
+                          <p className="text-[9px] text-gray-500 font-semibold truncate mt-0.5">
+                            {anime.genres.join(' • ')}
+                          </p>
+                        </div>
+                        <span className="text-[9px] bg-zinc-900 border border-zinc-800 text-cyan-400 font-bold px-2 py-0.5 rounded shrink-0">
+                          {expandedSearchId === anime.id ? 'CLOSE' : 'SELECT'}
+                        </span>
                       </div>
-                      <span className="text-[9px] bg-zinc-900 border border-zinc-800/80 text-cyan-400 font-bold px-2 py-0.5 rounded shrink-0">
-                        {anime.info.split('•')[0].trim()}
-                      </span>
+                      
+                      {expandedSearchId === anime.id && (
+                        <div className="mt-2.5 pt-2 border-t border-zinc-900 space-y-1.5 pl-1.5">
+                          <p className="text-[8px] text-zinc-500 uppercase font-black tracking-wider">Available Releases:</p>
+                          {anime.info.split('•').map((part, index) => {
+                            const cleanPart = part.trim();
+                            let eps = 12;
+                            const match = cleanPart.match(/\((\d+)\s+Episode/i) || cleanPart.match(/(\d+)\s+Episode/i);
+                            if (match) {
+                              eps = parseInt(match[1]);
+                            }
+                            const subTitle = `${anime.title} (${cleanPart})`;
+                            return (
+                              <div key={index} className="flex items-center justify-between bg-zinc-900/60 p-2 border border-zinc-850 hover:border-zinc-850 transition-all rounded">
+                                <div className="text-[10px] text-gray-300 font-medium pr-2">
+                                  {cleanPart}
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDirectAdd(subTitle, eps, anime.genres, anime.synopsis);
+                                  }}
+                                  className="text-[9px] font-black uppercase text-accent-gold hover:text-white px-2 py-1 bg-zinc-950 border border-accent-gold/40 hover:border-accent-gold hover:scale-105 active:scale-95 transition-all cursor-pointer rounded shrink-0"
+                                >
+                                  + ADD
+                                </button>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
