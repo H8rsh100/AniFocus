@@ -1,190 +1,90 @@
-<div align="center">
-
-# ░█████╗░███╗░░██╗██╗███████╗░█████╗░░█████╗░██╗░░░██╗░██████╗
-# ██╔══██╗████╗░██║██║██╔════╝██╔══██╗██╔══██╗██║░░░██║██╔════╝
-# ███████║██╔██╗██║██║█████╗░░██║░░██║██║░░╚═╝██║░░░██║╚█████╗░
-# ██╔══██║██║╚████║██║██╔══╝░░██║░░██║██║░░██╗██║░░░██║░╚═══██╗
-# ██║░░██║██║░╚███║██║██║░░░░░╚█████╔╝╚█████╔╝╚██████╔╝██████╔╝
-# ╚═╝░░╚═╝╚═╝░░╚══╝╚═╝╚═╝░░░░░╚════╝░░╚════╝░░╚═════╝░╚═════╝░
-
-### **Your personal otaku intelligence terminal.**
-*Not a tracker. A war room.*
-
-<br/>
-
-![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/Tailwind-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
-![LocalStorage](https://img.shields.io/badge/Persistence-localStorage-7c3aed?style=for-the-badge)
-![No Libraries](https://img.shields.io/badge/UI_Libraries-ZERO-e8003a?style=for-the-badge)
-
-<br/>
-
-> Built from scratch because every anime tracker felt like a spreadsheet.  
-> AniFocus feels like the medium it tracks.
-
-</div>
+# ⛩️ AniFocus | アニフォーカス
+> A High-Fidelity Cyberpunk Manga Editorial War Room and Focus Tracker.
 
 ---
 
-## WHAT IS THIS
+## 👁️ Visual Identity & Design System
+AniFocus is not another standard bootstrap dashboard. It is a high-information, sharp-edged manga editorial war room designed with an obsessive eye for detail.
 
-AniFocus is a personal anime tracking hub with a manga editorial visual identity. No generic dashboard grids. No card thumbnails fetched from APIs. No soft UI with rounded corners and drop shadows.
-
-Instead: a dark halftone screentone background, vertical CJK ink-stamp strips, Bebas Neue chapter-title typography, and a living **Aura** system where every anime card has its own handcrafted CSS animated background — unique to that series, built in pure CSS, no images.
-
-You start from zero. You build your own archive. The tracker becomes a personal gallery.
-
----
-
-## THE AURA SYSTEM
-
-Every card's background is a CSS animated effect unique to its series. This is the centerpiece of the whole app.
-
-| Series | Aura |
-|--------|------|
-| **Solo Leveling** | Deep violet radial glow · slow monarch pulse · crown SVG watermark |
-| **Chainsaw Man** | Orange-red flicker · card shakes 2px every 5s |
-| **Attack on Titan** | Cold steel grey · horizontal white scan line sweeping top to bottom |
-| **Death Note** | Dark crimson vignette · faint diagonal ruled-paper lines · oppressive stillness |
-| **Jujutsu Kaisen** | Pure black · two blurred violet pseudo-elements rotating like cursed energy |
-| **Demon Slayer** | Indigo-to-teal breathing pulse · flame shape at card bottom |
-| **Cyberpunk: Edgerunners** | Cyan/magenta glitch · `clip-path` slice shifts every 3s |
-| **Berserk** | Near-void black · Brand of Sacrifice SVG dripping red at 15% opacity |
-| **Evangelion** | Warning stripe at card bottom · NERV technical overlay feel |
-| **Frieren** | Silver-lavender · slow falling magic dust particle drift |
-| **Cowboy Bebop** | Smoky brown · slow upward smoke drift pseudo-element |
-| **Code Geass** | Blood red-black · Geass eye SVG pulsing · slow iris dilation |
-| **Steins;Gate** | CRT green scanline overlay · time divergence meter display |
-| **Mob Psycho 100** | Greyscale base · full-card violet flash every 5s — the `???` moment |
-| **One Piece** | Warm navy-gold · rolling wave pseudo-element at card bottom |
-| **Made in Abyss** | Abyss black · teal glow rising from card bottom · depth and dread |
-
-*50+ auras total. Every series in the database has one.*
+* **Halftone Matrix Overlay**: Radial-gradient dotted screen textures mimicking traditional manga printing press screens.
+* **CJK Vertical Hanko Stamps**: Rotating vertical Japanese seal strips (`見習い`, `中級者`, `上級者`, `オタク神`) acting as rank medals.
+* **9 Custom CSS Aura Classes**: Elements glow dynamically with interactive genre-matching speed lines:
+  * 🔴 **Shonen Crimson** (`#e8003a`) — Action/Fighters
+  * 🟡 **Seinen Gold** (`#f5c842`) — Slice of Life/Drama
+  * 🟣 **Isekai Purple** (`#7b2fff`) — Fantasy/Magic
+  * 🔵 **Mecha Blue** — Sci-Fi/Robots
+  * 🟢 **Forest Green** — Adventure/Fantasy
+  * 🟠 **Sports Orange** — Athletics/Competitive
+  * 🟡 **Cinematic Rainbow** — Feature Movies
+* **Display Typography**: Uppercase, tracked-wide, ultra-bold Bebas Neue headings.
 
 ---
 
-## FEATURES
+## ⚡ Technical Capabilities
 
-**Full Series Registry — 100+ titles**  
-Every entry is broken down completely. Not just the show — every season, movie, OVA, and special, each with episode count and type tag. Add exactly what you watched.
+### 1. Smart Autocomplete Database Search & Manual Prefill Form
+* **Minimum Input Trigger**: Activates dynamically at `2+` letters to search 100+ anime titles and releases.
+* **Smart Movie/OVA Parser**: Automatically detects specials, movies, or OVAs, setting their total episode count to `1` (e.g. *Jujutsu Kaisen 0* is parsed as `1 Movie` instead of defaulting to 12).
+* **Collapsing Suggestions Drawer**: Clicking `SELECT` on any release automatically populates the manual configuration form and closes the autocomplete panel instantly.
+* **Granular Priority & List Selection**: Prefilled fields let you choose between **Active Watching**, **Plan to Watch** (with Kanban priorities: High, Interested, Maybe Later), or **Completed Collection** statuses before importing.
 
-**Three-List Tracking**  
-`WATCHING` · `COMPLETED` · `PLAN TO WATCH`  
-Move entries between lists. Each list has its own empty state — no grey placeholder boxes.
+### 2. Focus Chamber (Binaural Beats & Brownian Noise Synthesizer)
+* **Progress Visualization**: Features an elegant circular progress ring displaying active series completion percentage (e.g. `57% Complete`).
+* **Real-time Synthesis**: No static MP3 files. Uses the **Web Audio API** to procedurally synthesize a binary soundscape:
+  * **Theta Binaural Beats**: Dual sine wave oscillators (130Hz Left / 134Hz Right) generating a 4Hz brainwave rhythm to enhance concentration.
+  * **Deep Brownian Noise**: Algorithmic accumulation buffer generating analog deep waterfall noise for environmental masking.
+* **Active State Sync**: Exiting Focus Mode seamlessly navigates you back to the Dashboard while preserving your active target as the **Continue Watching** focus series.
 
-**Episode Logging**  
-Per-entry episode counter with a progress bar in the series accent color. Hit the final episode and get an inline completion prompt.
-
-**Instant Search**  
-Type 2 characters. Zero debounce. Results appear immediately. Click a series to expand its full entry breakdown in the detail panel. Add any specific season or movie to any list independently.
-
-**Drag and Drop**  
-Reorder your watchlist with native HTML5 drag-and-drop. No library. No dependency.
-
-**Focus Mode**  
-20-minute watch sessions with a binaural audio engine — synthesized entirely via the Web Audio API. No MP3 files. Pure math.
-
-**Zero Demo Data**  
-The app opens completely empty. No pre-populated cards. You build your archive from scratch.
-
-**Full Persistence**  
-Everything writes to `localStorage` on every state change. Reload anytime, nothing is lost.
+### 3. Gamified Otaku Ranks & Trophy Room
+* Features dynamic rank calculation based on accumulated session XP:
+  * **見習い** (Apprentice) — `0 - 499 XP`
+  * **中級者** (Intermediate) — `500 - 1999 XP`
+  * **上級者** (Advanced) — `2000 - 4999 XP`
+  * **オタク神** (Otaku God) — `5000+ XP`
+* **Trophy Room**: Tracks all completed series including completion dates, ratings, and reviews logged directly during completed imports. Supports deletion/removal options with a warning prompt to correct mistaken entries.
 
 ---
 
-## VISUAL IDENTITY
-
-```
-Background     →  #08080f + halftone screentone dots (radial-gradient, 4px grid, violet 12% opacity)
-Strips         →  6 vertical 1px lines full viewport height with rotated CJK characters 力 覚 魂 界 戦 亜
-Accent Red     →  #e8003a
-Accent Gold    →  #f5c518
-Accent Violet  →  #7c3aed
-Accent Cyan    →  #00d4ff
-Display Font   →  Bebas Neue — chapter titles, stat numbers, all headings
-Body Font      →  Space Grotesk — metadata, descriptions
-Data Font      →  JetBrains Mono — episode counts, type badges, progress numbers
-Border Radius  →  4px maximum. Everywhere. No exceptions.
-```
-
----
-
-## TECH
-
-```
-Framework     Next.js + TypeScript
-Styling       Tailwind CSS + custom @keyframes
-Persistence   localStorage (SSR-safe hydration)
-Drag & Drop   Native HTML5 Browser API
-Audio         Web Audio API — OscillatorNode binaural synthesis + Brownian noise buffer
-UI Libraries  None
-```
-
----
-
-## FOR DEVELOPERS — WHAT THIS CODEBASE TEACHES
-
-This project is a real-world implementation of concepts most tutorials skip or abstract away with libraries.
-
-| Concept | Location |
-|---------|----------|
-| Lifting state up + callback props | `page.tsx` |
-| SSR-safe localStorage hydration with `hasMounted` | `page.tsx` mount effect |
-| Dynamic CSS class binding from array data | `Dashboard.tsx` → `getAuraClassForAnime` |
-| Custom animation `@keyframes` and CSS drop shadows | `globals.css` |
-| Native HTML5 Drag and Drop — `dataTransfer`, `dragover`, `drop` | `Dashboard.tsx` |
-| Web Audio API — `OscillatorNode`, channel merging, binaural tones | `FocusMode.tsx` → `startSynth` |
-| Brownian noise generation via randomized `AudioBuffer` | `FocusMode.tsx` → `createBrownNoiseBuffer` |
-| `.reduce()` for complex multi-key aggregation | `Statistics.tsx` |
-| Chronological grouping and sorting of nested data | `TrophyRoom.tsx` |
-
----
-
-## GETTING STARTED
-
+## 🛠️ Project Structure
 ```bash
-git clone https://github.com/H8rsh100/anifocus
-cd anifocus
-npm install
-npm run dev
-```
-
-Navigate to `http://localhost:3000` — the tracker opens empty. Start searching. Start adding. Build your archive.
-
----
-
-## LAYOUT
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│  ANIFOCUS                WATCHING: 0   COMPLETED: 0   PTW: 0 │
-├──────────────────────────────────────────────────────────────┤
-│  SEARCH 100+ SERIES — TYPE TO BEGIN...                       │
-├────────────────────────────┬─────────────────────────────────┤
-│                            │                                 │
-│  [ WATCHING ]              │  ▼ DEMON SLAYER                 │
-│  [ COMPLETED ]             │  ───────────────────────────    │
-│  [ PLAN TO WATCH ]         │  [ + ]  S1: Tanjiro  26ep  TV  │
-│                            │  [ + ]  Mugen Train   1    Movie│
-│  ┌────────────────────┐    │  [ + ]  S2: Entertain 11ep TV  │
-│  │  SOLO LEVELING     │    │  [ ✓ ]  S3: Swordsmith ← WATCH │
-│  │  S2: Arise from    │    │  [ + ]  S4: Hashira   8ep  TV  │
-│  │  the Shadow        │    │                                 │
-│  │  EP 08 / 13  ████░ │    │                                 │
-│  │  [ − ]  [ + ]  ✕   │    │                                 │
-│  └────────────────────┘    │                                 │
-│                            │                                 │
-└────────────────────────────┴─────────────────────────────────┘
+src/
+├── app/
+│   ├── globals.css      # Core Design Tokens, Halftones, 9 CSS Auras, Keyframes
+│   ├── layout.tsx       # Typography & Viewport Setup
+│   └── page.tsx         # Console Controller, Autocomplete Registry, Tab Monitor
+├── components/
+│   ├── Sidebar.tsx      # Vertical Navigation Hub
+│   ├── Dashboard.tsx    # Continue Watching & Kanban Category Columns
+│   ├── FocusMode.tsx    # Progress Ring, Web Audio Synth, Binaural Nodes
+│   ├── TrophyRoom.tsx   # Unlocked Achievements & Completed trophies
+│   ├── Statistics.tsx   # Progress Analytics charts
+│   └── Graveyard.tsx    # Dropped series rehabilitation
+├── data/
+│   ├── animeDatabase.ts # Registry of 100+ preloaded series and movies
+│   └── initialData.ts   # Otaku Rank boundaries & profile starters
+└── types/
+│   └── anime.ts         # UserProfile and KanbanCategory typings
 ```
 
 ---
 
-<div align="center">
+## 🚀 Quick Start (Local Run)
 
-**Built by [@H8rsh100](https://github.com/H8rsh100)**  
-[Instagram](https://instagram.com/_h8rshh)
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+2. **Run the development server**:
+   ```bash
+   npm run dev
+   ```
+3. **Build optimized production bundle**:
+   ```bash
+   npm run build
+   ```
 
-*Because every other tracker felt like a spreadsheet.*
+---
 
-</div>
+## 🌐 Continuous Deployment (Netlify & Vercel)
+This codebase is fully type-safe and verified for continuous integration.
+* **To Deploy on Netlify**: Connect your GitHub repository, set Build Command to `npm run build`, and Publish Directory to `.next`. Every commit push to `master` will trigger an automated build!
