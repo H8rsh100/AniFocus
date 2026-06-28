@@ -678,6 +678,7 @@ export default function Home() {
               isFocusTimerActive={isFocusTimerActive}
               setIsFocusTimerActive={setIsFocusTimerActive}
               onFocusSessionComplete={handleFocusSessionComplete}
+              onExitFocus={() => setActiveTab('dashboard')}
             />
           )}
 

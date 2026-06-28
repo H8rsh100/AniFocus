@@ -11,6 +11,7 @@ interface FocusModeProps {
   isFocusTimerActive?: boolean;
   setIsFocusTimerActive?: React.Dispatch<React.SetStateAction<boolean>>;
   onFocusSessionComplete?: () => void;
+  onExitFocus?: () => void;
 }
 
 export default function FocusMode({
@@ -18,7 +19,8 @@ export default function FocusMode({
   activeFocusId,
   setActiveFocusId,
   onUpdateEpisode,
-  onUpdateStatus
+  onUpdateStatus,
+  onExitFocus
 }: FocusModeProps) {
   const [isPlayingVisualizer, setIsPlayingVisualizer] = useState(false);
   const [activeAnimeId, setActiveAnimeId] = useState<string>(activeFocusId || '');
@@ -218,6 +220,7 @@ export default function FocusMode({
         <button
           onClick={() => {
             setActiveFocusId(null);
+            if (onExitFocus) onExitFocus();
           }}
           className="text-xs text-gray-500 hover:text-white flex items-center gap-1 font-bold uppercase tracking-wider transition-colors cursor-pointer"
         >
