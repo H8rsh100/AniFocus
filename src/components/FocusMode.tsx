@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Target, CheckCircle2, Volume2, VolumeX, Sparkles, Flame, Clock } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Target, CheckCircle2, Volume2, VolumeX, Sparkles, Flame, Clock, Play, Pause, RotateCcw } from 'lucide-react';
 import { AnimeItem } from '../types/anime';
 
 interface FocusModeProps {
@@ -8,6 +8,9 @@ interface FocusModeProps {
   setActiveFocusId: (id: string | null) => void;
   onUpdateEpisode: (id: string, newEp: number) => void;
   onUpdateStatus: (id: string, newStatus: AnimeItem['status']) => void;
+  isFocusTimerActive: boolean;
+  setIsFocusTimerActive: React.Dispatch<React.SetStateAction<boolean>>;
+  onFocusSessionComplete: () => void;
 }
 
 export default function FocusMode({
@@ -15,10 +18,20 @@ export default function FocusMode({
   activeFocusId,
   setActiveFocusId,
   onUpdateEpisode,
-  onUpdateStatus
+  onUpdateStatus,
+  isFocusTimerActive,
+  setIsFocusTimerActive,
+  onFocusSessionComplete
 }: FocusModeProps) {
   const [isPlayingVisualizer, setIsPlayingVisualizer] = useState(false);
   const [activeAnimeId, setActiveAnimeId] = useState<string>(activeFocusId || '');
+  const [timeLeft, setTimeLeft] = useState(1200); // 20 Minutes (1200 Seconds)
+
+  // Audio nodes refs
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const oscLRef = useRef<OscillatorNode | null>(null);
+  const oscRRef = useRef<OscillatorNode | null>(null);
+  const noiseSourceRef = useRef<AudioBufferSourceNode | null>(null);
 
   const watchingAnimeList = animeList.filter(a => a.status === 'watching');
 
@@ -31,9 +44,156 @@ export default function FocusMode({
     }
   }, [activeFocusId, watchingAnimeList, activeAnimeId]);
 
+  // Audio cleanup on unmount
+  useEffect(() => {
+    return () => {
+      stopSynth();
+    };
+  }, []);
+
+  // Timer interval count down
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+    if (isFocusTimerActive && timeLeft > 0) {
+      interval = setInterval(() => {
+        setTimeLeft(prev => {
+          if (prev <= 1) {
+            setIsFocusTimerActive(false);
+            onFocusSessionComplete();
+            // Trigger audio complete sound
+            try {
+              const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+              const osc = audioCtx.createOscillator();
+              const gain = audioCtx.createGain();
+              osc.type = 'triangle';
+              osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+              osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.15); // A5
+              gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+              gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.8);
+              osc.connect(gain);
+              gain.connect(audioCtx.destination);
+              osc.start();
+              osc.stop(audioCtx.currentTime + 0.8);
+            } catch (err) {}
+            return 1200; // Reset
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else if (!isFocusTimerActive && interval) {
+      clearInterval(interval);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isFocusTimerActive, timeLeft]);
+
+  // Handle Synth start/stop based on button toggle
+  useEffect(() => {
+    if (isPlayingVisualizer) {
+      startSynth();
+    } else {
+      stopSynth();
+    }
+  }, [isPlayingVisualizer]);
+
+  // Helper to generate Brownian noise buffer
+  const createBrownNoiseBuffer = (ctx: AudioContext, durationSeconds = 5) => {
+    const bufferSize = ctx.sampleRate * durationSeconds;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    let lastOut = 0.0;
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      data[i] = (lastOut + (0.02 * white)) / 1.02;
+      lastOut = data[i];
+      data[i] *= 3.5; // Amplify for balancing
+    }
+    return buffer;
+  };
+
+  const startSynth = () => {
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      const ctx = new AudioCtx();
+      audioContextRef.current = ctx;
+
+      // 1. Binaural beats (theta waves for concentration)
+      const oscL = ctx.createOscillator();
+      const oscR = ctx.createOscillator();
+      oscL.frequency.setValueAtTime(130, ctx.currentTime);
+      oscR.frequency.setValueAtTime(134, ctx.currentTime); // 4Hz difference
+      oscL.type = 'sine';
+      oscR.type = 'sine';
+
+      const merger = ctx.createChannelMerger(2);
+      const gainL = ctx.createGain();
+      const gainR = ctx.createGain();
+      gainL.gain.setValueAtTime(0.08, ctx.currentTime);
+      gainR.gain.setValueAtTime(0.08, ctx.currentTime);
+
+      oscL.connect(gainL);
+      oscR.connect(gainR);
+      gainL.connect(merger, 0, 0);
+      gainR.connect(merger, 0, 1);
+
+      // 2. Brownian noise
+      const noise = ctx.createBufferSource();
+      noise.buffer = createBrownNoiseBuffer(ctx, 5);
+      noise.loop = true;
+      const noiseGain = ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.12, ctx.currentTime);
+      noise.connect(noiseGain);
+
+      // Master output
+      const masterGain = ctx.createGain();
+      masterGain.gain.setValueAtTime(0.5, ctx.currentTime);
+
+      merger.connect(masterGain);
+      noiseGain.connect(masterGain);
+      masterGain.connect(ctx.destination);
+
+      oscL.start();
+      oscR.start();
+      noise.start();
+
+      oscLRef.current = oscL;
+      oscRRef.current = oscR;
+      noiseSourceRef.current = noise;
+    } catch (e) {
+      console.warn("Failed to initialize audio synth:", e);
+    }
+  };
+
+  const stopSynth = () => {
+    try {
+      if (oscLRef.current) {
+        oscLRef.current.stop();
+        oscLRef.current.disconnect();
+        oscLRef.current = null;
+      }
+      if (oscRRef.current) {
+        oscRRef.current.stop();
+        oscRRef.current.disconnect();
+        oscRRef.current = null;
+      }
+      if (noiseSourceRef.current) {
+        noiseSourceRef.current.stop();
+        noiseSourceRef.current.disconnect();
+        noiseSourceRef.current = null;
+      }
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+        audioContextRef.current = null;
+      }
+    } catch (e) {
+      console.warn("Error stopping synth:", e);
+    }
+  };
+
   const activeAnime = animeList.find(a => a.id === activeAnimeId);
 
-  // If no anime is selected, show selector screen
+  // Selector screen if no anime active
   if (!activeAnime) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center space-y-6 max-w-lg mx-auto">
@@ -41,15 +201,15 @@ export default function FocusMode({
           <Target className="w-8 h-8 text-primary-purple animate-pulse" />
         </div>
         <div className="space-y-2">
-          <h2 className="text-2xl font-black text-white tracking-wide">Enter the Focus Chamber</h2>
+          <h2 className="text-2xl font-black text-white tracking-wide font-bebas">ENTER THE FOCUS CHAMBER</h2>
           <p className="text-gray-400 text-sm">
-            Focus Mode temporarily locks your session onto a single anime series, hiding distractions, recommendations, and other lists to reduce decision fatigue.
+            Focus Mode locks your session onto a single anime series, keeping distractions away and activating tab monitoring.
           </p>
         </div>
 
         {watchingAnimeList.length === 0 ? (
           <div className="w-full bg-zinc-900/40 border border-zinc-800 p-4 rounded-xl text-gray-500 text-xs font-semibold">
-            You don't have any active anime in your "Watching List" to focus on. Go to the Command Center and log an episode or revive a series!
+            You don't have any active anime in your "Watching List" to focus on. Go back to Dashboard and import one!
           </div>
         ) : (
           <div className="w-full space-y-3">
@@ -74,7 +234,7 @@ export default function FocusMode({
                 }
               }}
               disabled={!activeAnimeId}
-              className="w-full py-3.5 bg-gradient-to-r from-primary-purple to-indigo-600 text-white font-extrabold rounded-xl text-sm shadow-[0_4px_15px_rgba(139,92,246,0.25)] hover:scale-102 active:scale-98 transition-all disabled:opacity-50"
+              className="w-full py-3.5 bg-gradient-to-r from-primary-purple to-indigo-600 text-white font-extrabold rounded-xl text-sm shadow-[0_4px_15px_rgba(139,92,246,0.25)] hover:scale-102 active:scale-98 transition-all disabled:opacity-50 cursor-pointer"
             >
               Lock in Focus Target
             </button>
@@ -84,7 +244,12 @@ export default function FocusMode({
     );
   }
 
-  // Calculate stats
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
   const progressPercent = Math.round((activeAnime.currentEp / activeAnime.totalEps) * 100);
   const remainingEpisodes = activeAnime.totalEps - activeAnime.currentEp;
   
@@ -93,12 +258,18 @@ export default function FocusMode({
   const remainingHours = Math.floor(totalMinutesRemaining / 60);
   const remainingMins = totalMinutesRemaining % 60;
 
+  // Percentage of timer elapsed
+  const timerPercent = (timeLeft / 1200) * 100;
+
   return (
     <div className="max-w-4xl mx-auto space-y-8">
-      {/* Back to normal dashboard button */}
+      {/* Exit focus header */}
       <div className="flex justify-between items-center">
         <button
-          onClick={() => setActiveFocusId(null)}
+          onClick={() => {
+            setActiveFocusId(null);
+            setIsFocusTimerActive(false);
+          }}
           className="text-xs text-gray-500 hover:text-white flex items-center gap-1 font-bold uppercase tracking-wider transition-colors cursor-pointer"
         >
           ◀ Exit Focus Mode
@@ -109,7 +280,6 @@ export default function FocusMode({
       </div>
 
       <div className="relative overflow-hidden rounded-3xl border border-[rgba(139,92,246,0.3)] bg-gradient-to-b from-zinc-950 via-zinc-950/70 to-cyber-black p-8 md:p-12 text-center flex flex-col items-center justify-center space-y-8 glow-purple-hover glass-panel-purple">
-        {/* Neon focus glow background ring */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary-purple/5 rounded-full blur-[120px] pointer-events-none animate-pulse-glow"></div>
         
         {/* Header Mission Title */}
@@ -118,15 +288,15 @@ export default function FocusMode({
             <Target className="w-4 h-4 text-primary-purple" />
             Current Priority Mission
           </div>
-          <h2 className="text-3xl md:text-5xl font-black text-white tracking-wide glow-text-purple">
-            FINISH: {activeAnime.title}
+          <h2 className="text-3xl md:text-5xl font-black text-white tracking-wide font-bebas glow-text-purple">
+            {activeAnime.title}
           </h2>
           <p className="text-xs text-gray-500 uppercase tracking-widest font-semibold mt-1">
             Episode {activeAnime.currentEp} / {activeAnime.totalEps} logged
           </p>
         </div>
 
-        {/* Circular Progress Gauge */}
+        {/* Circular Focus Countdown Gauge */}
         <div className="relative w-64 h-64 flex items-center justify-center z-10">
           <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
             {/* Outer track */}
@@ -140,32 +310,67 @@ export default function FocusMode({
             <circle 
               cx="50" cy="50" r="42" 
               fill="transparent" 
-              stroke="url(#focusGlowGrad)" 
+              stroke="url(#focusTimerGrad)" 
               strokeWidth="5.5" 
               strokeDasharray={263.8}
-              strokeDashoffset={263.8 - (263.8 * progressPercent) / 100}
+              strokeDashoffset={263.8 - (263.8 * timerPercent) / 100}
               strokeLinecap="round"
-              className="transition-all duration-700 ease-out"
+              className="transition-all duration-300 ease-linear"
             />
             <defs>
-              <linearGradient id="focusGlowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#8B5CF6" />
-                <stop offset="100%" stopColor="#06B6D4" />
+              <linearGradient id="focusTimerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#e8003a" />
+                <stop offset="100%" stopColor="#7b2fff" />
               </linearGradient>
             </defs>
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-5xl font-black text-white tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-400">
-              {progressPercent}%
+            <span className="text-5xl font-mono font-black text-white tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-400">
+              {formatTime(timeLeft)}
             </span>
-            <span className="text-[10px] text-gray-400 uppercase tracking-widest font-black mt-1">
-              Complete
+            <span className="text-[9px] text-gray-400 uppercase tracking-widest font-black mt-1">
+              {isFocusTimerActive ? 'Chamber Active' : 'Chamber Paused'}
             </span>
           </div>
         </div>
 
+        {/* Timer Control Panel */}
+        <div className="flex items-center gap-3 z-10">
+          <button
+            onClick={() => setIsFocusTimerActive(!isFocusTimerActive)}
+            className={`flex items-center gap-2 py-2 px-5 rounded-xl font-bold text-xs uppercase transition-all cursor-pointer ${
+              isFocusTimerActive 
+                ? 'bg-red-500/20 border border-red-500 text-red-400 hover:bg-red-500/30' 
+                : 'bg-gradient-to-r from-emerald-600 to-teal-500 text-white shadow-lg shadow-emerald-950/40 hover:scale-105'
+            }`}
+          >
+            {isFocusTimerActive ? (
+              <>
+                <Pause className="w-3.5 h-3.5" />
+                Pause Session
+              </>
+            ) : (
+              <>
+                <Play className="w-3.5 h-3.5" />
+                Start 20m Focus
+              </>
+            )}
+          </button>
+          
+          <button
+            onClick={() => {
+              setIsFocusTimerActive(false);
+              setTimeLeft(1200);
+            }}
+            className="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-gray-400 hover:text-white transition-all cursor-pointer hover:border-zinc-700"
+            title="Reset Countdown"
+          >
+            <RotateCcw className="w-4 h-4" />
+          </button>
+        </div>
+
         {/* Focus Stats Details */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 w-full max-w-xl relative z-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 w-full max-w-xl relative z-10 font-mono">
           <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-2xl p-4 flex flex-col items-center justify-center">
             <Clock className="w-5 h-5 text-neon-blue mb-1" />
             <span className="text-white font-extrabold text-sm">
@@ -187,13 +392,11 @@ export default function FocusMode({
           </div>
         </div>
 
-        {/* Motivational nudge */}
-        {activeAnime.motivationNudge && (
-          <div className="max-w-md bg-primary-purple/5 border border-primary-purple/20 p-4 rounded-xl text-xs text-gray-300 relative z-10 leading-relaxed">
-            <span className="font-extrabold text-primary-purple-hover block mb-1 uppercase tracking-wider">COMMAND HUD NUDGE</span>
-            "{activeAnime.motivationNudge}"
-          </div>
-        )}
+        {/* Visibility Warn Nudge */}
+        <div className="max-w-md bg-[#e8003a]/5 border border-[#e8003a]/30 p-4 rounded-xl text-xs text-gray-300 relative z-10 leading-relaxed font-mono">
+          <span className="font-extrabold text-[#e8003a] block mb-1 uppercase tracking-wider">TAB MONITORING ACTIVE</span>
+          Leaving this tab or switching focus while the countdown is active will trigger a penalty of <span className="text-[#f5c842] font-black">-30 XP</span> from your Otaku rank profile. Keep your attention locked!
+        </div>
 
         {/* Quick Log CTAs */}
         <div className="flex flex-col sm:flex-row gap-3 w-full max-w-md relative z-10">
@@ -221,7 +424,7 @@ export default function FocusMode({
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsPlayingVisualizer(!isPlayingVisualizer)}
-              className={`p-2.5 rounded-full border transition-all ${
+              className={`p-2.5 rounded-full border transition-all cursor-pointer ${
                 isPlayingVisualizer 
                   ? 'bg-primary-purple/10 border-primary-purple/40 text-primary-purple-hover' 
                   : 'bg-zinc-900 border-zinc-800 text-gray-500 hover:text-white'
@@ -230,9 +433,9 @@ export default function FocusMode({
               {isPlayingVisualizer ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
             </button>
             <div className="text-left">
-              <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Soundtrack</p>
+              <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">SOUND GENERATOR</p>
               <p className="text-xs text-white font-bold tracking-wide">
-                {isPlayingVisualizer ? 'Cyber-Lofi Focus Beats (Active)' : 'Audio visualizer (Muted)'}
+                {isPlayingVisualizer ? 'Binaural Beats + Brown Noise' : 'Chamber Audio Synth (OFF)'}
               </p>
             </div>
           </div>
@@ -259,7 +462,6 @@ export default function FocusMode({
         </div>
       </div>
 
-      {/* Bounce keyframe animation inject via custom style tag for standalone simplicity */}
       <style>{`
         @keyframes bounceBar {
           0% { height: 3px; }
