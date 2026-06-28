@@ -788,6 +788,8 @@ export default function Home() {
                                     setFormTotalEps(eps);
                                     setFormGenres(anime.genres.join(', '));
                                     setFormSynopsis(anime.synopsis || '');
+                                    setSearchQuery('');
+                                    setExpandedSearchId(null);
                                   }}
                                   className="text-[9px] font-black uppercase text-accent-gold hover:text-white px-2.5 py-1 bg-zinc-950 border border-accent-gold/40 hover:border-accent-gold hover:scale-105 active:scale-95 transition-all cursor-pointer rounded shrink-0 font-mono"
                                 >
