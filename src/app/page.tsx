@@ -68,13 +68,13 @@ export default function Home() {
     setHasMounted(true);
     
     // Clear out stale mock data from previous version if not reset yet
-    const hasResetStale = localStorage.getItem('anifocus_reset_stale_v3');
+    const hasResetStale = localStorage.getItem('anifocus_reset_start_fresh');
     if (!hasResetStale) {
       localStorage.removeItem('anifocus_anime');
       localStorage.removeItem('anifocus_profile');
       localStorage.removeItem('anifocus_achievements');
       localStorage.removeItem('anifocus_focus_id');
-      localStorage.setItem('anifocus_reset_stale_v3', 'true');
+      localStorage.setItem('anifocus_reset_start_fresh', 'true');
     }
 
     // Load from LocalStorage
