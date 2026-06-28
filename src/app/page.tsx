@@ -171,7 +171,7 @@ export default function Home() {
   };
 
   // Direct import selection handler
-  const handleDirectAdd = (title: string, totalEps: number, genres: string[], synopsis: string) => {
+  const handleDirectAdd = (title: string, totalEps: number, genres: string[], synopsis: string, status: AnimeItem['status']) => {
     const id = title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') + '-' + Date.now();
     const randomChance = Math.floor(Math.random() * 25) + 65; 
 
@@ -182,7 +182,8 @@ export default function Home() {
       currentEp: 0,
       totalEps: totalEps || 12,
       hoursPerEp: 0.4,
-      status: 'watching',
+      status,
+      kanbanCategory: status === 'planning' ? 'interested' : undefined,
       genres: genres.length > 0 ? genres : ['Action'],
       synopsis: synopsis || 'Imported watch target initiated.',
       probabilityOfCompleting: randomChance,
@@ -750,9 +751,17 @@ export default function Home() {
                           {anime.info.split('•').map((part, index) => {
                             const cleanPart = part.trim();
                             let eps = 12;
-                            const match = cleanPart.match(/\((\d+)\s+Episode/i) || cleanPart.match(/(\d+)\s+Episode/i);
-                            if (match) {
-                              eps = parseInt(match[1]);
+                            const cleanPartLower = cleanPart.toLowerCase();
+                            const movieMatch = cleanPart.match(/(\d+)\s+Movie/i) || cleanPart.match(/(\d+)\s+Film/i);
+                            if (movieMatch) {
+                              eps = parseInt(movieMatch[1]);
+                            } else if (cleanPartLower.includes('movie') || cleanPartLower.includes('film') || cleanPartLower.includes('special') || cleanPartLower.includes('ova')) {
+                              eps = 1;
+                            } else {
+                              const match = cleanPart.match(/\((\d+)\s+Episode/i) || cleanPart.match(/(\d+)\s+Episode/i) || cleanPart.match(/(\d+)\s+ep/i);
+                              if (match) {
+                                eps = parseInt(match[1]);
+                              }
                             }
                             const subTitle = `${anime.title} (${cleanPart})`;
                             return (
@@ -760,16 +769,28 @@ export default function Home() {
                                 <div className="text-[10px] text-gray-300 font-medium pr-2">
                                   {cleanPart}
                                 </div>
-                                <button
-                                  type="button"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleDirectAdd(subTitle, eps, anime.genres, anime.synopsis);
-                                  }}
-                                  className="text-[9px] font-black uppercase text-accent-gold hover:text-white px-2 py-1 bg-zinc-950 border border-accent-gold/40 hover:border-accent-gold hover:scale-105 active:scale-95 transition-all cursor-pointer rounded shrink-0"
-                                >
-                                  + ADD
-                                </button>
+                                <div className="flex gap-1.5 shrink-0">
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleDirectAdd(subTitle, eps, anime.genres, anime.synopsis, 'watching');
+                                    }}
+                                    className="text-[8px] font-black uppercase text-cyan-400 hover:text-white px-2 py-1 bg-zinc-950 border border-cyan-800/40 hover:border-cyan-400 hover:scale-105 active:scale-95 transition-all cursor-pointer rounded"
+                                  >
+                                    👁️ WATCH
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleDirectAdd(subTitle, eps, anime.genres, anime.synopsis, 'planning');
+                                    }}
+                                    className="text-[8px] font-black uppercase text-accent-gold hover:text-white px-2 py-1 bg-zinc-950 border border-accent-gold/40 hover:border-accent-gold hover:scale-105 active:scale-95 transition-all cursor-pointer rounded"
+                                  >
+                                    ⏳ PLAN
+                                  </button>
+                                </div>
                               </div>
                             );
                           })}
