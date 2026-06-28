@@ -19,6 +19,7 @@ interface DashboardProps {
   onUpdateKanbanCategory: (id: string, newCat: KanbanCategory) => void;
   onStartFocus: (id: string) => void;
   onOpenDetail: (anime: AnimeItem) => void;
+  activeFocusId?: string | null;
 }
 
 export default function Dashboard({
@@ -27,7 +28,8 @@ export default function Dashboard({
   onUpdateStatus,
   onUpdateKanbanCategory,
   onStartFocus,
-  onOpenDetail
+  onOpenDetail,
+  activeFocusId
 }: DashboardProps) {
   const [draggedAnimeId, setDraggedAnimeId] = useState<string | null>(null);
   const [flashingCardId, setFlashingCardId] = useState<string | null>(null);
@@ -35,14 +37,20 @@ export default function Dashboard({
   const watchingList = animeList.filter(a => a.status === 'watching');
   const planningList = animeList.filter(a => a.status === 'planning');
 
-  const continueWatching = watchingList.length > 0 
-    ? watchingList.reduce((prev, current) => {
-        if (prev.lastWatchedDate && current.lastWatchedDate) {
-          return new Date(prev.lastWatchedDate) > new Date(current.lastWatchedDate) ? prev : current;
-        }
-        return (prev.currentEp / prev.totalEps) > (current.currentEp / current.totalEps) ? prev : current;
-      })
+  // Prioritize whichever anime was last active in Focus Mode (activeFocusId)
+  let continueWatching = activeFocusId 
+    ? watchingList.find(a => a.id === activeFocusId) || null 
     : null;
+
+  // Fallback to latest watched or highest progress if no activeFocusId match
+  if (!continueWatching && watchingList.length > 0) {
+    continueWatching = watchingList.reduce((prev, current) => {
+      if (prev.lastWatchedDate && current.lastWatchedDate) {
+        return new Date(prev.lastWatchedDate) > new Date(current.lastWatchedDate) ? prev : current;
+      }
+      return (prev.currentEp / prev.totalEps) > (current.currentEp / current.totalEps) ? prev : current;
+    });
+  }
 
   const handleDragStart = (e: React.DragEvent, id: string) => {
     setDraggedAnimeId(id);

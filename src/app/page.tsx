@@ -664,6 +664,7 @@ export default function Home() {
               onUpdateKanbanCategory={handleUpdateKanbanCategory}
               onStartFocus={handleStartFocus}
               onOpenDetail={(anime) => setSelectedDetailAnime(anime)}
+              activeFocusId={activeFocusId}
             />
           )}
 
