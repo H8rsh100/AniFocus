@@ -37,10 +37,12 @@ export default function FocusMode({
   useEffect(() => {
     if (activeFocusId) {
       setActiveAnimeId(activeFocusId);
-    } else if (watchingAnimeList.length > 0 && !activeAnimeId) {
-      setActiveAnimeId(watchingAnimeList[0].id);
+    } else if (watchingAnimeList.length > 0) {
+      const defaultId = watchingAnimeList[0].id;
+      setActiveAnimeId(defaultId);
+      setActiveFocusId(defaultId);
     }
-  }, [activeFocusId, watchingAnimeList, activeAnimeId]);
+  }, [activeFocusId, watchingAnimeList, setActiveFocusId]);
 
   // Audio cleanup on unmount
   useEffect(() => {
@@ -219,7 +221,6 @@ export default function FocusMode({
       <div className="flex justify-between items-center">
         <button
           onClick={() => {
-            setActiveFocusId(null);
             if (onExitFocus) onExitFocus();
           }}
           className="text-xs text-gray-500 hover:text-white flex items-center gap-1 font-bold uppercase tracking-wider transition-colors cursor-pointer"
