@@ -474,6 +474,16 @@ export default function Home() {
     saveState(updatedList, result.profile, result.achievements);
   };
 
+  // 6b. Delete anime completely from database
+  const handleDeleteAnime = (id: string) => {
+    const updatedList = animeList.filter(a => a.id !== id);
+    setAnimeList(updatedList);
+    saveState(updatedList, profile, achievements);
+    if (selectedDetailAnime && selectedDetailAnime.id === id) {
+      setSelectedDetailAnime(null);
+    }
+  };
+
   // 7. Start Focus helper
   const handleStartFocus = (id: string) => {
     setActiveFocusId(id);
@@ -668,6 +678,7 @@ export default function Home() {
               animeList={animeList}
               achievements={achievements}
               profile={profile}
+              onDeleteAnime={handleDeleteAnime}
             />
           )}
 
@@ -769,28 +780,19 @@ export default function Home() {
                                 <div className="text-[10px] text-gray-300 font-medium pr-2">
                                   {cleanPart}
                                 </div>
-                                <div className="flex gap-1.5 shrink-0">
-                                  <button
-                                    type="button"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleDirectAdd(subTitle, eps, anime.genres, anime.synopsis, 'watching');
-                                    }}
-                                    className="text-[8px] font-black uppercase text-cyan-400 hover:text-white px-2 py-1 bg-zinc-950 border border-cyan-800/40 hover:border-cyan-400 hover:scale-105 active:scale-95 transition-all cursor-pointer rounded"
-                                  >
-                                    👁️ WATCH
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleDirectAdd(subTitle, eps, anime.genres, anime.synopsis, 'planning');
-                                    }}
-                                    className="text-[8px] font-black uppercase text-accent-gold hover:text-white px-2 py-1 bg-zinc-950 border border-accent-gold/40 hover:border-accent-gold hover:scale-105 active:scale-95 transition-all cursor-pointer rounded"
-                                  >
-                                    ⏳ PLAN
-                                  </button>
-                                </div>
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setFormTitle(subTitle);
+                                    setFormTotalEps(eps);
+                                    setFormGenres(anime.genres.join(', '));
+                                    setFormSynopsis(anime.synopsis || '');
+                                  }}
+                                  className="text-[9px] font-black uppercase text-accent-gold hover:text-white px-2.5 py-1 bg-zinc-950 border border-accent-gold/40 hover:border-accent-gold hover:scale-105 active:scale-95 transition-all cursor-pointer rounded shrink-0 font-mono"
+                                >
+                                  SELECT
+                                </button>
                               </div>
                             );
                           })}

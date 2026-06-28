@@ -1,14 +1,15 @@
 import React from 'react';
-import { Award, Calendar, Heart, MessageSquare, Star, Clock, Lock } from 'lucide-react';
+import { Award, Calendar, Heart, MessageSquare, Star, Clock, Lock, Trash2 } from 'lucide-react';
 import { AnimeItem, Achievement } from '../types/anime';
 
 interface TrophyRoomProps {
   animeList: AnimeItem[];
   achievements: Achievement[];
   profile: any;
+  onDeleteAnime?: (id: string) => void;
 }
 
-export default function TrophyRoom({ animeList, achievements, profile }: TrophyRoomProps) {
+export default function TrophyRoom({ animeList, achievements, profile, onDeleteAnime }: TrophyRoomProps) {
   const completedList = animeList.filter(a => a.status === 'completed');
 
   return (
@@ -45,10 +46,25 @@ export default function TrophyRoom({ animeList, achievements, profile }: TrophyR
                     </h3>
                   </div>
                   
-                  {/* Rating value */}
-                  <div className="bg-amber-500/10 border border-amber-500/40 text-amber-400 text-[10px] font-black tracking-widest px-3 py-1 rounded-full flex items-center gap-1.5 uppercase shadow-lg shrink-0">
-                    <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                    Score: {anime.rating}/10
+                  {/* Rating value and delete button */}
+                  <div className="flex items-center gap-2 shrink-0">
+                    <div className="bg-amber-500/10 border border-amber-500/40 text-amber-400 text-[10px] font-black tracking-widest px-3 py-1 rounded-full flex items-center gap-1.5 uppercase shadow-lg">
+                      <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                      Score: {anime.rating}/10
+                    </div>
+                    {onDeleteAnime && (
+                      <button
+                        onClick={() => {
+                          if (confirm(`Remove "${anime.title}" from completed collection?`)) {
+                            onDeleteAnime(anime.id);
+                          }
+                        }}
+                        className="p-1.5 bg-rose-950/30 border border-rose-900/40 hover:bg-rose-950 hover:border-rose-500 text-rose-400 rounded-lg transition-all cursor-pointer"
+                        title="Remove Trophy"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
                   </div>
                 </div>
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Target, CheckCircle2, Volume2, VolumeX, Sparkles, Flame, Clock, Play, Pause, RotateCcw } from 'lucide-react';
+import { Target, Volume2, VolumeX, Sparkles, Flame, Clock, Plus, Check } from 'lucide-react';
 import { AnimeItem } from '../types/anime';
 
 interface FocusModeProps {
@@ -8,9 +8,9 @@ interface FocusModeProps {
   setActiveFocusId: (id: string | null) => void;
   onUpdateEpisode: (id: string, newEp: number) => void;
   onUpdateStatus: (id: string, newStatus: AnimeItem['status']) => void;
-  isFocusTimerActive: boolean;
-  setIsFocusTimerActive: React.Dispatch<React.SetStateAction<boolean>>;
-  onFocusSessionComplete: () => void;
+  isFocusTimerActive?: boolean;
+  setIsFocusTimerActive?: React.Dispatch<React.SetStateAction<boolean>>;
+  onFocusSessionComplete?: () => void;
 }
 
 export default function FocusMode({
@@ -18,14 +18,10 @@ export default function FocusMode({
   activeFocusId,
   setActiveFocusId,
   onUpdateEpisode,
-  onUpdateStatus,
-  isFocusTimerActive,
-  setIsFocusTimerActive,
-  onFocusSessionComplete
+  onUpdateStatus
 }: FocusModeProps) {
   const [isPlayingVisualizer, setIsPlayingVisualizer] = useState(false);
   const [activeAnimeId, setActiveAnimeId] = useState<string>(activeFocusId || '');
-  const [timeLeft, setTimeLeft] = useState(1200); // 20 Minutes (1200 Seconds)
 
   // Audio nodes refs
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -50,43 +46,6 @@ export default function FocusMode({
       stopSynth();
     };
   }, []);
-
-  // Timer interval count down
-  useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
-    if (isFocusTimerActive && timeLeft > 0) {
-      interval = setInterval(() => {
-        setTimeLeft(prev => {
-          if (prev <= 1) {
-            setIsFocusTimerActive(false);
-            onFocusSessionComplete();
-            // Trigger audio complete sound
-            try {
-              const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
-              const osc = audioCtx.createOscillator();
-              const gain = audioCtx.createGain();
-              osc.type = 'triangle';
-              osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
-              osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.15); // A5
-              gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-              gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.8);
-              osc.connect(gain);
-              gain.connect(audioCtx.destination);
-              osc.start();
-              osc.stop(audioCtx.currentTime + 0.8);
-            } catch (err) {}
-            return 1200; // Reset
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    } else if (!isFocusTimerActive && interval) {
-      clearInterval(interval);
-    }
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [isFocusTimerActive, timeLeft]);
 
   // Handle Synth start/stop based on button toggle
   useEffect(() => {
@@ -203,7 +162,7 @@ export default function FocusMode({
         <div className="space-y-2">
           <h2 className="text-2xl font-black text-white tracking-wide font-bebas">ENTER THE FOCUS CHAMBER</h2>
           <p className="text-gray-400 text-sm">
-            Focus Mode locks your session onto a single anime series, keeping distractions away and activating tab monitoring.
+            Focus Mode locks your session onto a single anime series, keeping distractions away and keeping your eyes on the prize.
           </p>
         </div>
 
@@ -244,12 +203,6 @@ export default function FocusMode({
     );
   }
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
-
   const progressPercent = Math.round((activeAnime.currentEp / activeAnime.totalEps) * 100);
   const remainingEpisodes = activeAnime.totalEps - activeAnime.currentEp;
   
@@ -258,9 +211,6 @@ export default function FocusMode({
   const remainingHours = Math.floor(totalMinutesRemaining / 60);
   const remainingMins = totalMinutesRemaining % 60;
 
-  // Percentage of timer elapsed
-  const timerPercent = (timeLeft / 1200) * 100;
-
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Exit focus header */}
@@ -268,7 +218,6 @@ export default function FocusMode({
         <button
           onClick={() => {
             setActiveFocusId(null);
-            setIsFocusTimerActive(false);
           }}
           className="text-xs text-gray-500 hover:text-white flex items-center gap-1 font-bold uppercase tracking-wider transition-colors cursor-pointer"
         >
@@ -296,7 +245,7 @@ export default function FocusMode({
           </p>
         </div>
 
-        {/* Circular Focus Countdown Gauge */}
+        {/* Circular Progress Gauge */}
         <div className="relative w-64 h-64 flex items-center justify-center z-10">
           <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
             {/* Outer track */}
@@ -310,63 +259,28 @@ export default function FocusMode({
             <circle 
               cx="50" cy="50" r="42" 
               fill="transparent" 
-              stroke="url(#focusTimerGrad)" 
+              stroke="url(#focusProgressGrad)" 
               strokeWidth="5.5" 
               strokeDasharray={263.8}
-              strokeDashoffset={263.8 - (263.8 * timerPercent) / 100}
+              strokeDashoffset={263.8 - (263.8 * progressPercent) / 100}
               strokeLinecap="round"
-              className="transition-all duration-300 ease-linear"
+              className="transition-all duration-700 ease-out"
             />
             <defs>
-              <linearGradient id="focusTimerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#e8003a" />
-                <stop offset="100%" stopColor="#7b2fff" />
+              <linearGradient id="focusProgressGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#8B5CF6" />
+                <stop offset="100%" stopColor="#06B6D4" />
               </linearGradient>
             </defs>
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-5xl font-mono font-black text-white tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-400">
-              {formatTime(timeLeft)}
+            <span className="text-5xl font-black text-white tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-400">
+              {progressPercent}%
             </span>
-            <span className="text-[9px] text-gray-400 uppercase tracking-widest font-black mt-1">
-              {isFocusTimerActive ? 'Chamber Active' : 'Chamber Paused'}
+            <span className="text-[10px] text-gray-400 uppercase tracking-widest font-black mt-1">
+              Complete
             </span>
           </div>
-        </div>
-
-        {/* Timer Control Panel */}
-        <div className="flex items-center gap-3 z-10">
-          <button
-            onClick={() => setIsFocusTimerActive(!isFocusTimerActive)}
-            className={`flex items-center gap-2 py-2 px-5 rounded-xl font-bold text-xs uppercase transition-all cursor-pointer ${
-              isFocusTimerActive 
-                ? 'bg-red-500/20 border border-red-500 text-red-400 hover:bg-red-500/30' 
-                : 'bg-gradient-to-r from-emerald-600 to-teal-500 text-white shadow-lg shadow-emerald-950/40 hover:scale-105'
-            }`}
-          >
-            {isFocusTimerActive ? (
-              <>
-                <Pause className="w-3.5 h-3.5" />
-                Pause Session
-              </>
-            ) : (
-              <>
-                <Play className="w-3.5 h-3.5" />
-                Start 20m Focus
-              </>
-            )}
-          </button>
-          
-          <button
-            onClick={() => {
-              setIsFocusTimerActive(false);
-              setTimeLeft(1200);
-            }}
-            className="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-gray-400 hover:text-white transition-all cursor-pointer hover:border-zinc-700"
-            title="Reset Countdown"
-          >
-            <RotateCcw className="w-4 h-4" />
-          </button>
         </div>
 
         {/* Focus Stats Details */}
@@ -392,11 +306,13 @@ export default function FocusMode({
           </div>
         </div>
 
-        {/* Visibility Warn Nudge */}
-        <div className="max-w-md bg-[#e8003a]/5 border border-[#e8003a]/30 p-4 rounded-xl text-xs text-gray-300 relative z-10 leading-relaxed font-mono">
-          <span className="font-extrabold text-[#e8003a] block mb-1 uppercase tracking-wider">TAB MONITORING ACTIVE</span>
-          Leaving this tab or switching focus while the countdown is active will trigger a penalty of <span className="text-[#f5c842] font-black">-30 XP</span> from your Otaku rank profile. Keep your attention locked!
-        </div>
+        {/* Motivation Nudge */}
+        {activeAnime.motivationNudge && (
+          <div className="max-w-md bg-primary-purple/5 border border-primary-purple/20 p-4 rounded-xl text-xs text-gray-300 relative z-10 leading-relaxed font-mono">
+            <span className="font-extrabold text-primary-purple-hover block mb-1 uppercase tracking-wider">COMMAND HUD NUDGE</span>
+            "{activeAnime.motivationNudge}"
+          </div>
+        )}
 
         {/* Quick Log CTAs */}
         <div className="flex flex-col sm:flex-row gap-3 w-full max-w-md relative z-10">
