@@ -60,6 +60,8 @@ export default function Home() {
   const [formKanbanCat, setFormKanbanCat] = useState<KanbanCategory>('interested');
   const [formGenres, setFormGenres] = useState('Action');
   const [formSynopsis, setFormSynopsis] = useState('');
+  const [formRating, setFormRating] = useState<number>(10);
+  const [formReview, setFormReview] = useState<string>('');
 
   // Mount check for Next.js hydration safety
   useEffect(() => {
@@ -514,19 +516,29 @@ export default function Home() {
       id,
       title: formTitle,
       coverUrl: '',
-      currentEp: 0,
+      currentEp: formStatus === 'completed' ? formTotalEps : 0,
       totalEps: formTotalEps,
       hoursPerEp: 0.4,
       status: formStatus,
+      completionDate: formStatus === 'completed' ? new Date().toISOString().split('T')[0] : undefined,
+      rating: formStatus === 'completed' ? formRating : undefined,
+      reviews: formStatus === 'completed' ? (formReview.trim() || 'Imported directly into completed collection.') : undefined,
       kanbanCategory: formStatus === 'planning' ? formKanbanCat : undefined,
       genres: genresArray.length > 0 ? genresArray : ['Other'],
       synopsis: formSynopsis.trim() || 'Custom watch target initiated.',
       probabilityOfCompleting: randomChance,
-      motivationNudge: `This arc looks interesting! Keep watching to secure a high completion score.`
+      motivationNudge: formStatus === 'completed' ? 'Successfully archived mission completed!' : `This arc looks interesting! Keep watching to secure a high completion score.`
     };
 
     const updatedList = [newAnime, ...animeList];
-    const result = addXp(20, profile, achievements);
+
+    let updatedProfile = { ...profile };
+    if (formStatus === 'completed') {
+      updatedProfile.completedCount = (updatedProfile.completedCount || 0) + 1;
+    }
+
+    const xpBonus = formStatus === 'completed' ? 70 : 20; // +50 XP bonus for completing
+    const result = addXp(xpBonus, updatedProfile, achievements);
 
     setAnimeList(updatedList);
     setProfile(result.profile);
@@ -539,6 +551,8 @@ export default function Home() {
     setFormStatus('watching');
     setFormGenres('Action');
     setFormSynopsis('');
+    setFormRating(10);
+    setFormReview('');
     setSearchQuery('');
     setIsAddModalOpen(false);
 
@@ -855,6 +869,7 @@ export default function Home() {
                   >
                     <option value="watching">Active Watching</option>
                     <option value="planning">Plan To Watch</option>
+                    <option value="completed">Completed Collection</option>
                   </select>
                 </div>
               </div>
@@ -873,6 +888,37 @@ export default function Home() {
                     <option value="interested">🎯 Interested</option>
                     <option value="maybe">⏳ Maybe Later</option>
                   </select>
+                </div>
+              )}
+
+              {formStatus === 'completed' && (
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest">
+                      Your Rating (1-10)
+                    </label>
+                    <select
+                      value={formRating}
+                      onChange={(e) => setFormRating(parseInt(e.target.value) || 10)}
+                      className="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-primary-purple transition-all"
+                    >
+                      {[10, 9, 8, 7, 6, 5, 4, 3, 2, 1].map(n => (
+                        <option key={n} value={n}>{n}/10</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest">
+                      Brief Review
+                    </label>
+                    <input
+                      type="text"
+                      value={formReview}
+                      onChange={(e) => setFormReview(e.target.value)}
+                      placeholder="e.g. Masterpiece, solid animation!"
+                      className="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-primary-purple transition-all"
+                    />
+                  </div>
                 </div>
               )}
 
