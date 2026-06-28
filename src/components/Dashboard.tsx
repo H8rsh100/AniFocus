@@ -30,6 +30,7 @@ export default function Dashboard({
   onOpenDetail
 }: DashboardProps) {
   const [draggedAnimeId, setDraggedAnimeId] = useState<string | null>(null);
+  const [flashingCardId, setFlashingCardId] = useState<string | null>(null);
 
   const watchingList = animeList.filter(a => a.status === 'watching');
   const planningList = animeList.filter(a => a.status === 'planning');
@@ -61,6 +62,58 @@ export default function Dashboard({
     }
   };
 
+  const handleEpClick = (id: string, nextEp: number) => {
+    setFlashingCardId(id);
+    onUpdateEpisode(id, nextEp);
+    setTimeout(() => {
+      setFlashingCardId(null);
+    }, 600);
+  };
+
+  // Helper to map genres/titles to custom CSS aura classes from globals.css
+  const getAuraClassForAnime = (genres: string[], title: string): string => {
+    const titleLower = title.toLowerCase();
+    
+    // Movie check
+    if (titleLower.includes('movie') || titleLower.includes('film') || genres.some(g => g.toLowerCase().includes('movie'))) {
+      return 'aura-movie';
+    }
+    
+    const genreSet = new Set(genres.map(g => g.toLowerCase()));
+    
+    // Cyberpunk/Sci-Fi check
+    if (genreSet.has('cyberpunk') || genreSet.has('sci-fi') || titleLower.includes('cyber')) {
+      return 'aura-cyberpunk';
+    }
+    // Mecha check
+    if (genreSet.has('mecha') || genreSet.has('robot') || titleLower.includes('gundam')) {
+      return 'aura-mecha';
+    }
+    // Sports check
+    if (genreSet.has('sports') || titleLower.includes('blue lock') || titleLower.includes('haikyu')) {
+      return 'aura-sports';
+    }
+    // Isekai check
+    if (genreSet.has('isekai') || titleLower.includes('re:') || titleLower.includes('world') || titleLower.includes('slime')) {
+      return 'aura-isekai';
+    }
+    // Psychological/Horror/Thriller check
+    if (genreSet.has('psychological') || genreSet.has('horror') || genreSet.has('thriller') || titleLower.includes('death')) {
+      return 'aura-psychological';
+    }
+    // Slice of life / Drama check
+    if (genreSet.has('slice of life') || genreSet.has('romance') || genreSet.has('drama')) {
+      return 'aura-slice';
+    }
+    // Fantasy/Adventure check
+    if (genreSet.has('fantasy') || genreSet.has('magic') || genreSet.has('adventure')) {
+      return 'aura-fantasy';
+    }
+    
+    // Shonen default aura
+    return 'aura-shonen';
+  };
+
   const kanbanColumns: { id: KanbanCategory; title: string; color: string; bg: string; border: string }[] = [
     { id: 'high', title: '🔥 High Priority', color: 'text-orange-400', bg: 'bg-orange-500/5', border: 'border-orange-500/20' },
     { id: 'interested', title: '🎯 Interested', color: 'text-indigo-400', bg: 'bg-indigo-500/5', border: 'border-indigo-500/20' },
@@ -80,11 +133,11 @@ export default function Dashboard({
             </h2>
           </div>
           
-          <div className="relative group overflow-hidden rounded-2xl border border-[rgba(139,92,246,0.2)] bg-gradient-to-r from-zinc-950/80 via-zinc-900/40 to-transparent p-6 md:p-8 flex flex-col md:flex-row gap-6 items-center justify-between glow-purple-hover transition-all duration-500 glass-panel">
+          <div className={`relative group overflow-hidden rounded-2xl border bg-gradient-to-r from-zinc-950/80 via-zinc-900/40 to-transparent p-6 md:p-8 flex flex-col md:flex-row gap-6 items-center justify-between transition-all duration-500 glass-panel ${getAuraClassForAnime(continueWatching.genres, continueWatching.title)}`}>
             <div className="absolute top-0 right-0 w-80 h-80 bg-primary-purple/10 rounded-full blur-[100px] pointer-events-none animate-pulse-glow"></div>
             
             <div className="flex flex-col md:flex-row gap-6 items-center w-full md:w-auto flex-1">
-              {/* Text Console Accent Icon Block instead of Anime cover */}
+              {/* Text Console Accent Icon Block */}
               <div 
                 className="w-16 h-16 md:w-20 md:h-20 rounded-xl bg-zinc-900/80 border border-primary-purple/35 flex items-center justify-center text-2xl shrink-0 cursor-pointer shadow-[0_0_15px_rgba(139,92,246,0.2)]"
                 onClick={() => onOpenDetail(continueWatching)}
@@ -105,14 +158,14 @@ export default function Dashboard({
                   </div>
                   <h3 
                     onClick={() => onOpenDetail(continueWatching)}
-                    className="text-2xl md:text-3xl font-extrabold text-white tracking-wide cursor-pointer hover:text-primary-purple-hover transition-colors"
+                    className="text-2xl md:text-3xl font-extrabold text-white tracking-wide cursor-pointer hover:text-primary-purple-hover transition-colors font-bebas"
                   >
                     {continueWatching.title}
                   </h3>
                 </div>
 
                 <div className="space-y-2 max-w-xl">
-                  <div className="flex justify-between items-center text-xs text-gray-400 font-semibold">
+                  <div className="flex justify-between items-center text-xs text-gray-400 font-semibold font-mono">
                     <span>Episode {continueWatching.currentEp} of {continueWatching.totalEps}</span>
                     <span className="text-neon-blue">{Math.round((continueWatching.currentEp / continueWatching.totalEps) * 100)}% Complete</span>
                   </div>
@@ -135,14 +188,14 @@ export default function Dashboard({
             <div className="flex flex-col gap-2.5 w-full md:w-48 shrink-0 relative z-10">
               <button 
                 onClick={() => onStartFocus(continueWatching.id)}
-                className="w-full flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-primary-purple to-indigo-600 rounded-xl text-white font-extrabold text-xs shadow-[0_4px_15px_rgba(139,92,246,0.3)] hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer glow-purple"
+                className="w-full flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-primary-purple to-indigo-600 rounded-xl text-white font-extrabold text-xs shadow-[0_4px_15px_rgba(139,92,246,0.3)] hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer glow-purple font-mono"
               >
                 <Play className="w-3.5 h-3.5 fill-white" />
                 Resume Focus
               </button>
               <button 
-                onClick={() => onUpdateEpisode(continueWatching.id, continueWatching.currentEp + 1)}
-                className="w-full flex items-center justify-center gap-2 py-2.5 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-xl text-gray-200 font-bold text-xs hover:bg-zinc-800 active:scale-98 transition-all cursor-pointer"
+                onClick={() => handleEpClick(continueWatching.id, continueWatching.currentEp + 1)}
+                className="w-full flex items-center justify-center gap-2 py-2.5 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-xl text-gray-200 font-bold text-xs hover:bg-zinc-800 active:scale-98 transition-all cursor-pointer font-mono"
               >
                 <Plus className="w-3.5 h-3.5" />
                 Log Episode {continueWatching.currentEp + 1}
@@ -161,7 +214,7 @@ export default function Dashboard({
               Active Watch List ({watchingList.length})
             </h2>
           </div>
-          <span className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">
+          <span className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider font-mono">
             +10 XP / EPISODE LOGGED
           </span>
         </div>
@@ -174,22 +227,27 @@ export default function Dashboard({
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {watchingList.map((anime) => {
               const progress = Math.round((anime.currentEp / anime.totalEps) * 100);
+              const isFlashing = flashingCardId === anime.id;
+              const auraClass = getAuraClassForAnime(anime.genres, anime.title);
+              
               return (
                 <div 
                   key={anime.id}
-                  className="group relative bg-cyber-gray border border-zinc-800 rounded-xl p-5 flex flex-col justify-between space-y-4 hover:border-cyan-500/30 glow-blue-hover transition-all duration-300 glass-panel"
+                  className={`group relative bg-cyber-gray border border-zinc-800 rounded-xl p-5 flex flex-col justify-between space-y-4 hover:border-cyan-500/30 transition-all duration-300 glass-panel ${auraClass} ${
+                    isFlashing ? 'border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.6)] scale-[1.02]' : ''
+                  }`}
                 >
                   <div className="space-y-2">
                     <div className="flex justify-between items-start gap-2">
                       <div className="flex flex-wrap gap-1.5 max-w-[70%]">
                         {anime.genres.slice(0, 2).map((g) => (
-                          <span key={g} className="text-[9px] bg-zinc-900 border border-zinc-800/80 text-gray-400 px-1.5 py-0.2 rounded font-semibold">
+                          <span key={g} className="text-[9px] bg-zinc-900 border border-zinc-800/80 text-gray-400 px-1.5 py-0.2 rounded font-semibold uppercase font-mono">
                             {g}
                           </span>
                         ))}
                       </div>
-                      <span className="text-[10px] font-black text-cyan-400 bg-cyan-950/40 border border-cyan-800/40 px-2 py-0.5 rounded">
-                        {progress}% Complete
+                      <span className="text-[10px] font-black text-cyan-400 bg-cyan-950/40 border border-cyan-800/40 px-2 py-0.5 rounded font-mono">
+                        {progress}%
                       </span>
                     </div>
 
@@ -200,7 +258,7 @@ export default function Dashboard({
                       {anime.title}
                     </h4>
                     
-                    <div className="flex items-center gap-1.5 text-xs text-gray-400 font-semibold">
+                    <div className="flex items-center gap-1.5 text-xs text-gray-400 font-semibold font-mono">
                       <TermIcon className="w-3.5 h-3.5 text-cyan-400" />
                       <span>EP {anime.currentEp} / {anime.totalEps}</span>
                     </div>
@@ -217,9 +275,9 @@ export default function Dashboard({
                   </div>
 
                   {/* Card Actions */}
-                  <div className="flex gap-1.5 pt-1">
+                  <div className="flex gap-1.5 pt-1 font-mono">
                     <button 
-                      onClick={() => onUpdateEpisode(anime.id, anime.currentEp + 1)}
+                      onClick={() => handleEpClick(anime.id, anime.currentEp + 1)}
                       className="flex-1 flex items-center justify-center gap-1 py-2 bg-cyan-950/30 border border-cyan-900/40 hover:bg-cyan-950/80 hover:border-cyan-500 text-cyan-400 rounded-lg text-xs font-bold transition-all cursor-pointer"
                     >
                       <Plus className="w-3.5 h-3.5" />
@@ -227,7 +285,7 @@ export default function Dashboard({
                     </button>
                     <button 
                       onClick={() => {
-                        onUpdateEpisode(anime.id, anime.totalEps);
+                        handleEpClick(anime.id, anime.totalEps);
                         onUpdateStatus(anime.id, 'completed');
                       }}
                       className="p-2 bg-emerald-950/40 border border-emerald-800/40 hover:bg-emerald-950 hover:border-emerald-500 text-emerald-400 rounded-lg text-xs font-bold transition-all cursor-pointer"
@@ -255,11 +313,11 @@ export default function Dashboard({
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <span className="w-2 h-4 rounded bg-primary-purple"></span>
-            <h2 className="text-sm font-bold text-gray-400 uppercase tracking-widest font-semibold">
+            <h2 className="text-sm font-bold text-gray-400 uppercase tracking-widest">
               Planning to Watch Kanban
             </h2>
           </div>
-          <span className="text-[10px] text-gray-500 font-semibold tracking-wider flex items-center gap-1 uppercase">
+          <span className="text-[10px] text-gray-500 font-semibold tracking-wider flex items-center gap-1 uppercase font-mono">
             Drag & Drop Cards to Categorize
           </span>
         </div>
@@ -278,7 +336,7 @@ export default function Dashboard({
                   <h3 className={`font-extrabold text-sm uppercase tracking-wider ${col.color}`}>
                     {col.title}
                   </h3>
-                  <span className="bg-zinc-900 border border-zinc-800 text-[10px] text-gray-400 font-bold px-2 py-0.5 rounded-full">
+                  <span className="bg-zinc-900 border border-zinc-800 text-[10px] text-gray-400 font-bold px-2 py-0.5 rounded-full font-mono">
                     {colAnime.length}
                   </span>
                 </div>
@@ -305,20 +363,20 @@ export default function Dashboard({
                           </h4>
                           <div className="flex flex-wrap gap-1 mt-1.5">
                             {anime.genres.slice(0, 2).map(g => (
-                              <span key={g} className="text-[9px] bg-zinc-900 text-gray-500 px-1 py-0.2 rounded font-medium">
+                              <span key={g} className="text-[9px] bg-zinc-900 text-gray-500 px-1 py-0.2 rounded font-medium uppercase font-mono">
                                 {g}
                               </span>
                             ))}
                           </div>
                         </div>
 
-                        <div className="flex justify-between items-center text-[10px] text-gray-400 bg-zinc-900/40 p-1.5 rounded border border-zinc-900">
+                        <div className="flex justify-between items-center text-[10px] text-gray-400 bg-zinc-900/40 p-1.5 rounded border border-zinc-900 font-mono">
                           <span>Length: {anime.totalEps} Eps</span>
                           <span className="text-primary-purple-hover font-bold">AI Chance: {anime.probabilityOfCompleting}%</span>
                         </div>
 
                         {/* Action buttons inside card */}
-                        <div className="flex gap-1.5 pt-1.5 border-t border-zinc-900">
+                        <div className="flex gap-1.5 pt-1.5 border-t border-zinc-900 font-mono">
                           <button 
                             onClick={() => onUpdateStatus(anime.id, 'watching')}
                             className="flex-1 flex items-center justify-center gap-1 py-1.5 bg-primary-purple/15 border border-primary-purple/30 text-primary-purple-hover hover:bg-primary-purple/35 rounded text-[10px] font-bold transition-all cursor-pointer"
