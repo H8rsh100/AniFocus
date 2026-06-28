@@ -476,5 +476,374 @@ export const ANIME_DATABASE: DatabaseAnime[] = [
     synopsis: 'Naruto Uzumaki, a mischievous adolescent ninja, struggles for recognition in the Leaf Village, hoping to earn the respect of his peers and become the Hokage, the village leader.',
     type: 'Series',
     info: '9 Seasons (220 Episodes) • 3 Original Movies • 4 OVAs'
+  },
+  {
+    id: 'violet_evergarden',
+    title: 'Violet Evergarden',
+    totalEps: 13,
+    genres: ['Drama', 'Fantasy'],
+    synopsis: 'The Great War has finally come to an end after four long years. Violet Evergarden, a young girl formerly known as "the weapon," begins a new life working as an Auto Memory Doll, transcribing people\'s thoughts and feelings into letters.',
+    type: 'Series',
+    info: '1 Season (13 Episodes) • 1 Special Episode • 2 Movies'
+  },
+  {
+    id: 'clannad_as',
+    title: 'Clannad: After Story',
+    totalEps: 24,
+    genres: ['Drama', 'Romance', 'Supernatural'],
+    synopsis: 'Clannad: After Story, the sequel to the critically acclaimed slice-of-life series Clannad, begins after Tomoya Okazaki and Nagisa Furukawa graduate from high school. As they grow up, they face the emotional hardships of adult life.',
+    type: 'Series',
+    info: '1 Season Complete (24 Episodes) • 1 Special'
+  },
+  {
+    id: 'fate_zero',
+    title: 'Fate/Zero',
+    totalEps: 25,
+    genres: ['Action', 'Fantasy', 'Supernatural'],
+    synopsis: 'With the promise of granting any wish, the omnipotent Holy Grail triggered three wars in the past, each too cruel and fierce to leave a victor. In search of the fourth war, seven magi summon legendary Heroic Spirits.',
+    type: 'Series',
+    info: '2 Seasons Complete (25 Episodes)'
+  },
+  {
+    id: 'fate_stay_night_ubw',
+    title: 'Fate/stay night: Unlimited Blade Works',
+    totalEps: 26,
+    genres: ['Action', 'Fantasy', 'Supernatural'],
+    synopsis: 'The Holy Grail War is a battle royale among seven magi who serve as Masters. Summoning Heroic Spirits as Servants, they fight to the death to claim the Holy Grail, which can grant wishes.',
+    type: 'Series',
+    info: '2 Seasons Complete (26 Episodes) • 1 Movie Prequel'
+  },
+  {
+    id: 'no_game_no_life',
+    title: 'No Game No Life',
+    totalEps: 12,
+    genres: ['Comedy', 'Fantasy', 'Ecchi'],
+    synopsis: 'Sora and Shiro are two shut-in NEET siblings who form the legendary online gamer duo known as "Blank." They view the real world as just another lousy game until a god summons them to a fantasy world where all conflicts are settled by games.',
+    type: 'Series',
+    info: '1 Season Complete (12 Episodes) • 1 Movie (NGNL: Zero)'
+  },
+  {
+    id: 'another',
+    title: 'Another',
+    totalEps: 12,
+    genres: ['Horror', 'Mystery', 'Suspense'],
+    synopsis: 'In 1998, Kouichi Sakakibara transfers to Yomiyama North Middle School. He immediately senses a fearful atmosphere in his class, centering on a quiet girl named Mei Misaki, whom his classmates treat like she doesn\'t exist.',
+    type: 'Series',
+    info: '1 Season Complete (12 Episodes) • 1 OVA'
+  },
+  {
+    id: 'mirai_nikki',
+    title: 'Future Diary (Mirai Nikki)',
+    totalEps: 26,
+    genres: ['Action', 'Suspense', 'Supernatural'],
+    synopsis: 'Yukiteru Amano is a shy middle schooler who keeps a diary on his phone. He finds himself dragged into a battle royale game where the contestants must use their unique "Future Diaries" to eliminate each other and become the new God of Time and Space.',
+    type: 'Series',
+    info: '1 Season Complete (26 Episodes) • 1 OVA (Redial)'
+  },
+  {
+    id: 'mushoku_tensei',
+    title: 'Mushoku Tensei: Jobless Reincarnation',
+    totalEps: 48,
+    genres: ['Adventure', 'Fantasy', 'Isekai'],
+    synopsis: 'A 34-year-old underachiever is killed in a traffic accident and reincarnates in a world of magic and swordplay as Rudeus Greyrat, a newborn baby. Retaining his memories and intellect, he resolves to live his new life to the fullest.',
+    type: 'Series',
+    info: '2 Seasons (48 Episodes) • 1 Special OVA'
+  },
+  {
+    id: 'classroom_of_the_elite',
+    title: 'Classroom of the Elite (Youkoso Jitsuryoku Shijou Shugi no Kyoushitsu e)',
+    totalEps: 38,
+    genres: ['Drama', 'Suspense', 'School'],
+    synopsis: 'Kiyotaka Ayanokouji enrolls at the prestigious Tokyo Metropolitan Advanced Nurturing High School, where students are granted immense freedom. However, he ends up in the lowest Class D, discovering the school\'s cutthroat merit system.',
+    type: 'Series',
+    info: '3 Seasons (38 Episodes)'
+  },
+  {
+    id: 'overlord',
+    title: 'Overlord',
+    totalEps: 52,
+    genres: ['Action', 'Fantasy', 'Isekai'],
+    synopsis: 'In the final hour of the popular virtual reality game Yggdrasil, veteran player Momonga decides to stay logged in until the servers shut down. Instead of being logged out, he finds himself trapped in his skeletal character in a new world.',
+    type: 'Series',
+    info: '4 Seasons Complete (52 Episodes) • 3 Movies'
+  },
+  {
+    id: 'gintama',
+    title: 'Gintama',
+    totalEps: 367,
+    genres: ['Action', 'Comedy', 'Sci-Fi'],
+    synopsis: 'In an alternate Edo-period Japan conquered by aliens called Amanto, samurai Gintoki Sakata runs an odd-jobs business alongside Shinpachi and Kagura, taking on bizarre requests while dodging trouble.',
+    type: 'Series',
+    info: '10+ Seasons (367 Episodes) • 3 Movies • 5 Specials'
+  },
+  {
+    id: 'psycho_pass',
+    title: 'Psycho-Pass',
+    totalEps: 41,
+    genres: ['Action', 'Sci-Fi', 'Suspense'],
+    synopsis: 'In a futuristic Japan, the Sibyl System measures the mental state of citizens to determine their criminal intent, known as their Psycho-Pass. Inspector Akane Tsunemori and Enforcer Shinya Kogami hunt down those with high crime coefficients.',
+    type: 'Series',
+    info: '3 Seasons (41 Episodes) • 5 Movies'
+  },
+  {
+    id: 'akame_ga_kill',
+    title: 'Akame ga Kill!',
+    totalEps: 24,
+    genres: ['Action', 'Fantasy', 'Gore'],
+    synopsis: 'Tatsumi, a young villager who travels to the Capital to raise money, discovers the deep corruption of the empire. He joins Night Raid, an assassin branch of the Revolutionary Army, to overthrow the prime minister.',
+    type: 'Series',
+    info: '1 Season Complete (24 Episodes)'
+  },
+  {
+    id: 'kill_la_kill',
+    title: 'Kill la Kill',
+    totalEps: 24,
+    genres: ['Action', 'Comedy', 'Sci-Fi'],
+    synopsis: 'Ryuuko Matoi transfers to Honnouji Academy, carrying a giant half-scissors blade to search for her father\'s killer. She challenges Satsuki Kiryuuin and the school\'s elite, who wear superhuman Goku Uniforms.',
+    type: 'Series',
+    info: '1 Season Complete (24 Episodes) • 1 Special'
+  },
+  {
+    id: 'nanatsu_no_taizai',
+    title: 'The Seven Deadly Sins (Nanatsu no Taizai)',
+    totalEps: 100,
+    genres: ['Action', 'Adventure', 'Fantasy'],
+    synopsis: 'Princess Elizabeth searches for the Seven Deadly Sins, a group of powerful knights who were accused of plotting to overthrow the Liones Kingdom, hoping to recruit them to save her home from the corrupt Holy Knights.',
+    type: 'Series',
+    info: '4 Seasons Complete (100 Episodes) • 3 Movies • 1 Special'
+  },
+  {
+    id: 'fairy_tail',
+    title: 'Fairy Tail',
+    totalEps: 328,
+    genres: ['Action', 'Adventure', 'Fantasy'],
+    synopsis: 'Lucy Heartfilia, a teenage wizard, runs away from home to join the famous Fairy Tail Guild. She teams up with fire wizard Natsu Dragneel and his cat companion Happy, embarking on magical quests.',
+    type: 'Series',
+    info: '9 Seasons (328 Episodes) • 2 Movies • 9 OVAs'
+  },
+  {
+    id: 'noragami',
+    title: 'Noragami',
+    totalEps: 25,
+    genres: ['Action', 'Fantasy', 'Supernatural'],
+    synopsis: 'Yato is a minor deity who dreams of having millions of worshippers. Lacking even a single shrine, he performs odd jobs for five yen. His life changes when high schooler Hiyori Iki saves him from a bus accident.',
+    type: 'Series',
+    info: '2 Seasons Complete (25 Episodes) • 4 OVAs'
+  },
+  {
+    id: 'erased',
+    title: 'Erased (Boku dake ga Inai Machi)',
+    totalEps: 12,
+    genres: ['Mystery', 'Suspense', 'Supernatural'],
+    synopsis: 'Satoru Fujinuma possesses a supernatural ability called "Revival" that sends him back in time minutes before a tragedy. After his mother is murdered, he is sent back 18 years to prevent her death and save his childhood classmates.',
+    type: 'Series',
+    info: '1 Season Complete (12) Episodes'
+  },
+  {
+    id: 'charlotte',
+    title: 'Charlotte',
+    totalEps: 13,
+    genres: ['Drama', 'Supernatural', 'School'],
+    synopsis: 'In an alternate world, a small percentage of children develop short-lived supernatural abilities at puberty. Yuu Otosaka uses his body-slip ability to live a perfect school life until he is caught by Nao Tomori.',
+    type: 'Series',
+    info: '1 Season Complete (13 Episodes) • 1 Special OVA'
+  },
+  {
+    id: 'angel_beats',
+    title: 'Angel Beats!',
+    totalEps: 13,
+    genres: ['Drama', 'Comedy', 'Supernatural'],
+    synopsis: 'Yuzuru Otonashi wakes up with amnesia in the afterlife, finding himself in a high-school-style purgatory. He is recruited by Yuri Nakamura to join the Afterlife Battlefront, fighting against the school president Angel.',
+    type: 'Series',
+    info: '1 Season Complete (13 Episodes) • 2 Specials'
+  },
+  {
+    id: 'food_wars',
+    title: 'Food Wars! Shokugeki no Soma',
+    totalEps: 86,
+    genres: ['Comedy', 'Ecchi', 'School'],
+    synopsis: 'Soma Yukihira aims to become a full-time chef in his father\'s restaurant. His father sends him to Totsuki Culinary Academy, an elite cooking school where students settle arguments through intense culinary duels.',
+    type: 'Series',
+    info: '5 Seasons Complete (86 Episodes) • 5 OVAs'
+  },
+  {
+    id: 'konosuba',
+    title: 'KonoSuba: God\'s Blessing on this Wonderful World!',
+    totalEps: 33,
+    genres: ['Adventure', 'Comedy', 'Fantasy'],
+    synopsis: 'After dying a laughable death, high schooler Kazuma Satou is offered a choice by the goddess Aqua: go to heaven or reincarnate in a fantasy world. He chooses the fantasy world and takes Aqua with him, only to discover she is useless.',
+    type: 'Series',
+    info: '3 Seasons (33 Episodes) • 1 Movie • 2 OVAs'
+  },
+  {
+    id: 'horimiya',
+    title: 'Horimiya',
+    totalEps: 26,
+    genres: ['Romance', 'School'],
+    synopsis: 'Kyoko Hori is a popular high schooler who hides her domestic side. Izumi Miyamura is a gloomy classmate who hides his tattoos and piercings. They cross paths outside school, discovering each other\'s secrets and growing close.',
+    type: 'Series',
+    info: '2 Seasons Complete (26 Episodes)'
+  },
+  {
+    id: 'toradora',
+    title: 'Toradora!',
+    totalEps: 25,
+    genres: ['Comedy', 'Romance', 'School'],
+    synopsis: 'Ryuuji Takasu is a gentle high schooler whose intimidating eyes make him look like a delinquent. He crosses paths with Taiga Aisaka, the pint-sized "Palmtop Tiger," agreeing to help each other confess to their respective best friends.',
+    type: 'Series',
+    info: '1 Season Complete (25 Episodes) • 1 Special'
+  },
+  {
+    id: 'anohana',
+    title: 'Anohana: The Flower We Saw That Day',
+    totalEps: 11,
+    genres: ['Drama', 'Supernatural'],
+    synopsis: 'Jinta Yadomi lives as a hermit after his childhood friend Menma dies. One summer day, Menma\'s ghost appears, asking him to grant her forgotten wish. Jinta must reunite their drifted group of childhood friends to help her pass on.',
+    type: 'Series',
+    info: '1 Season Complete (11 Episodes) • 1 Movie Sequel'
+  },
+  {
+    id: 'jojo_part3',
+    title: 'JoJo\'s Bizarre Adventure: Stardust Crusaders',
+    totalEps: 48,
+    genres: ['Action', 'Adventure', 'Supernatural'],
+    synopsis: 'Jotaro Kujo, grandson of Joseph Joestar, discovers he possesses a supernatural manifestation called a Stand. He embarks on a journey to Egypt with Joseph and their allies to defeat the revived vampire DIO and save his mother.',
+    type: 'Series',
+    info: '2 Seasons Complete (48 Episodes)'
+  },
+  {
+    id: 'fire_force',
+    title: 'Fire Force (Enen no Shouboutai)',
+    totalEps: 48,
+    genres: ['Action', 'Sci-Fi', 'Supernatural'],
+    synopsis: 'Spontaneous Human Combustion turns victims into fiery monsters known as Infernals. Shinra Kusakabe, a youth who can ignite his feet at will, joins Special Fire Force Company 8 to combat the phenomenon and find the truth behind his family\'s death.',
+    type: 'Series',
+    info: '2 Seasons (48 Episodes) • Season 3 (Upcoming)'
+  },
+  {
+    id: 'darling_in_the_franxx',
+    title: 'Darling in the Franxx',
+    totalEps: 24,
+    genres: ['Action', 'Drama', 'Sci-Fi', 'Mecha'],
+    synopsis: 'In a post-apocalyptic future, children pilot giant mechas called Franxx in male-female pairs. Hiro, a failed pilot, meets Zero Two, a mysterious horned hybrid pilot who offers to let him become her co-pilot.',
+    type: 'Series',
+    info: '1 Season Complete (24 Episodes)'
+  },
+  {
+    id: 'hellsing_ultimate',
+    title: 'Hellsing Ultimate',
+    totalEps: 10,
+    genres: ['Action', 'Horror', 'Gore', 'Supernatural'],
+    synopsis: 'The Hellsing Organization fights rogue vampires and supernatural threats. Their ultimate weapon is Alucard, an ancient and incredibly powerful vampire who serves the organization under Sir Integra Hellsing.',
+    type: 'Series',
+    info: '10 OVA Episodes Complete (50-minute average)'
+  },
+  {
+    id: 'dr_stone',
+    title: 'Dr. Stone',
+    totalEps: 35,
+    genres: ['Adventure', 'Sci-Fi'],
+    synopsis: 'A mysterious green light petrifies all humanity. Thousands of years later, genius Senku Ishigami wakes up, resolving to rebuild civilization from scratch using the power of science alongside his classmates.',
+    type: 'Series',
+    info: '3 Seasons (35 Episodes) • 1 Special Movie'
+  },
+  {
+    id: 'tate_no_yuusha',
+    title: 'The Rising of the Shield Hero (Tate no Yuusha no Nariagari)',
+    totalEps: 38,
+    genres: ['Action', 'Adventure', 'Fantasy', 'Isekai'],
+    synopsis: 'Naofumi Iwatani is summoned to a parallel world as one of the Four Cardinal Heroes, armed with only a shield. Betrayed and falsely accused, he must build his strength and reputation from zero to protect the land.',
+    type: 'Series',
+    info: '3 Seasons (38 Episodes)'
+  },
+  {
+    id: 'blue_exorcist',
+    title: 'Blue Exorcist (Ao no Exorcist)',
+    totalEps: 37,
+    genres: ['Action', 'Fantasy', 'School'],
+    synopsis: 'Rin Okumura discovers he is the son of Satan, the ruler of Gehenna. After Satan kills Rin\'s adoptive father, Rin enrolls at True Cross Academy to become an exorcist and defeat Satan.',
+    type: 'Series',
+    info: '3 Seasons (37 Episodes) • 1 Movie'
+  },
+  {
+    id: 'made_in_abyss',
+    title: 'Made in Abyss',
+    totalEps: 25,
+    genres: ['Adventure', 'Drama', 'Fantasy', 'Mystery'],
+    synopsis: 'Riko, an orphan girl, dreams of exploring the Abyss, a colossal pit filled with relics and monsters. She meets a humanoid robot named Reg, descending into the Abyss to find her mother, discovering dark truths along the way.',
+    type: 'Series',
+    info: '2 Seasons (25 Episodes) • 3 Movies'
+  },
+  {
+    id: 'serial_experiments_lain',
+    title: 'Serial Experiments Lain',
+    totalEps: 13,
+    genres: ['Sci-Fi', 'Psychological', 'Mystery'],
+    synopsis: 'Lain Iwakura, an introverted middle schooler, receives an email from a classmate who recently committed suicide. She is drawn into the Wired, a global virtual communications network, questioning the boundaries of reality and identity.',
+    type: 'Series',
+    info: '1 Season Complete (13 Episodes)'
+  },
+  {
+    id: 'dorohedoro',
+    title: 'Dorohedoro',
+    totalEps: 12,
+    genres: ['Action', 'Comedy', 'Fantasy', 'Gore'],
+    synopsis: 'Caiman is a man with a reptile head and amnesia, living in the Hole, a dismal city. Alongside his friend Nikaido, he hunts down sorcerers who use citizens as test subjects, hoping to find the one who cursed him.',
+    type: 'Series',
+    info: '1 Season (12 Episodes) • 6 Specials • Season 2 (Upcoming)'
+  },
+  {
+    id: 'bungou_stray_dogs',
+    title: 'Bungou Stray Dogs',
+    totalEps: 61,
+    genres: ['Action', 'Mystery', 'Supernatural'],
+    synopsis: 'Atsushi Nakajima is kicked out of his orphanage and rescues detective Osamu Dazai. He joins the Armed Detective Agency, a group of supernatural investigators who protect Yokohama from the Port Mafia and overseas syndicates.',
+    type: 'Series',
+    info: '5 Seasons Complete (61 Episodes) • 1 Movie • 1 OVA'
+  },
+  {
+    id: 'black_lagoon',
+    title: 'Black Lagoon',
+    totalEps: 24,
+    genres: ['Action', 'Thriller'],
+    synopsis: 'Rokurou Okajima, a Japanese businessman, is kidnapped by the Lagoon Company, a group of pirate mercenaries operating out of Roanapur, Thailand. He decides to join them, renaming himself Rock and adapting to a violent life.',
+    type: 'Series',
+    info: '2 Seasons Complete (24 Episodes) • 5 OVA Episodes'
+  },
+  {
+    id: 'claymore',
+    title: 'Claymore',
+    totalEps: 26,
+    genres: ['Action', 'Fantasy', 'Gore'],
+    synopsis: 'In a medieval world plagued by shape-shifting monsters called Yoma, a mysterious organization breeds half-human, half-Yoma female warriors known as Claymores to hunt the beasts in exchange for payments from villages.',
+    type: 'Series',
+    info: '1 Season Complete (26 Episodes)'
+  },
+  {
+    id: 'baccano',
+    title: 'Baccano!',
+    totalEps: 16,
+    genres: ['Action', 'Mystery', 'Supernatural'],
+    synopsis: 'In 1930s America, a diverse cast of characters, including alchemists, mafiosi, thieves, and assassins, become entangled in an immortal elixir conspiracy. The story is told through non-linear overlapping timelines.',
+    type: 'Series',
+    info: '1 Season Complete (16 Episodes)'
+  },
+  {
+    id: 'durarara',
+    title: 'Durarara!!',
+    totalEps: 60,
+    genres: ['Action', 'Mystery', 'Supernatural'],
+    synopsis: 'Mikado Ryuugamine moves to Ikebukuro, Tokyo, searching for excitement. He uncovers the neighborhood\'s secrets, including street gangs, a slash-happy serial killer, and the legendary Headless Rider Celty Sturluson.',
+    type: 'Series',
+    info: '4 Seasons Complete (60 Episodes) • 5 Specials'
+  },
+  {
+    id: 'great_teacher_onizuka',
+    title: 'Great Teacher Onizuka (GTO)',
+    totalEps: 43,
+    genres: ['Comedy', 'Drama', 'School'],
+    synopsis: 'Eikichi Onizuka, a 22-year-old former gang leader, resolves to become the greatest high school teacher in Japan. He is assigned to Class 3-4, a class of delinquent students whom he wins over using unconventional life lessons.',
+    type: 'Series',
+    info: '1 Season Complete (43 Episodes) • 1 Special'
   }
 ];
