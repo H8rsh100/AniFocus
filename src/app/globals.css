@@ -1,28 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-primary-purple: #8B5CF6;
-  --color-primary-purple-hover: #A78BFA;
+  --color-primary-purple: #7b2fff; /* isekai monarch glow */
+  --color-primary-purple-hover: #9c5dff;
   --color-neon-blue: #06B6D4;
   --color-neon-blue-hover: #22D3EE;
-  --color-neon-pink: #EC4899;
-  --color-cyber-black: #050505;
-  --color-cyber-gray: #121214;
-  --color-panel-border: rgba(139, 92, 246, 0.15);
-  --color-panel-border-hover: rgba(6, 182, 212, 0.3);
+  --color-neon-pink: #e8003a; /* shonen blood ink */
+  --color-accent-gold: #f5c842; /* seinen chapter seal */
+  --color-cyber-black: #0a0a0f; /* near-void black */
+  --color-cyber-gray: #111118; /* panel base */
+  --color-panel-border: rgba(232, 0, 58, 0.2); /* shonen accent border */
+  --color-panel-border-hover: rgba(245, 200, 66, 0.4);
 }
 
 :root {
-  --background: #050505;
-  --foreground: #F3F4F6;
+  --background: #0a0a0f;
+  --foreground: #c8c8e0;
+  --accent-red: #e8003a;
+  --accent-gold: #f5c842;
+  --accent-violet: #7b2fff;
+  --color-bg: #0a0a0f;
+  --color-surface: #111118;
+  --text-muted: #4a4a6a;
+  --text-body: #c8c8e0;
   color-scheme: dark;
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
   overflow-x: hidden;
+  /* Custom Halftone Screentone Dot Pattern */
+  background-image: 
+    radial-gradient(circle, rgba(123, 47, 255, 0.08) 1.2px, transparent 1.2px);
+  background-size: 8px 8px;
+  background-attachment: fixed;
 }
 
 /* Custom Scrollbar */
@@ -32,107 +46,271 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #050505;
+  background: var(--color-bg);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1F1F23;
-  border-radius: 4px;
+  background: #1c1c28;
+  border: 1px solid var(--accent-red);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #2D2D34;
+  background: var(--accent-red);
 }
 
-/* Cyber Glow Effects */
-.glow-purple {
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.15);
+/* Vertical Japanese/Korean CJK Seal Strips */
+.seal-strip {
+  position: fixed;
+  top: 0;
+  width: 2px;
+  height: 100vh;
+  background-color: rgba(232, 0, 58, 0.06);
+  pointer-events: none;
+  z-index: 1;
 }
 
-.glow-purple-hover:hover {
-  box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+.seal-strip::after {
+  content: "亜 魂 力 覚 界 戦 剣 神 鬼";
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%) rotate(0deg);
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  color: rgba(232, 0, 58, 0.12);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 4rem;
+  font-weight: bold;
 }
 
-.glow-blue {
-  box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
+.seal-strip-1 { left: 8%; }
+.seal-strip-2 { left: 24%; }
+.seal-strip-3 { left: 72%; }
+.seal-strip-4 { left: 90%; }
+
+/* Typography */
+.font-bebas {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.1em;
 }
 
-.glow-blue-hover:hover {
-  box-shadow: 0 0 30px rgba(6, 182, 212, 0.35);
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
 }
 
-.glow-text-purple {
-  text-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+/* HUD Panels & Aesthetics */
+.hud-panel {
+  background: var(--color-surface);
+  border: 2px solid var(--accent-red);
+  position: relative;
 }
 
-.glow-text-blue {
-  text-shadow: 0 0 8px rgba(6, 182, 212, 0.6);
+.hud-panel-gold {
+  background: var(--color-surface);
+  border: 2px solid var(--accent-gold);
+  position: relative;
 }
 
-/* Glassmorphism Panels */
-.glass-panel {
-  background: rgba(18, 18, 20, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+.hud-panel-purple {
+  background: var(--color-surface);
+  border: 2px solid var(--accent-violet);
+  position: relative;
 }
 
-.glass-panel-purple {
-  background: rgba(18, 18, 20, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(139, 92, 246, 0.15);
+/* Double-border effect */
+.hud-double-border {
+  position: relative;
+}
+.hud-double-border::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  border: 1px solid rgba(232, 0, 58, 0.3);
+  pointer-events: none;
 }
 
-.glass-panel-blue {
-  background: rgba(18, 18, 20, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(6, 182, 212, 0.15);
+/* Hanko Square Red Stamp Style for ranks/badges */
+.hanko-stamp {
+  border: 2px solid var(--accent-red);
+  background: var(--color-bg);
+  color: var(--accent-red);
+  padding: 2px 6px;
+  font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  box-shadow: 2px 2px 0px rgba(232, 0, 58, 0.3);
 }
 
-/* Animations */
-@keyframes float {
-  0% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-10px) rotate(1deg); }
-  100% { transform: translateY(0px) rotate(0deg); }
+.hanko-stamp-gold {
+  border: 2px solid var(--accent-gold);
+  background: var(--color-bg);
+  color: var(--accent-gold);
+  padding: 2px 6px;
+  font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  box-shadow: 2px 2px 0px rgba(245, 200, 66, 0.3);
 }
 
-.animate-float {
-  animation: float 6s ease-in-out infinite;
+/* Spinning speed lines hero overlay */
+@keyframes speed-lines-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-@keyframes pulse-glow {
-  0%, 100% { opacity: 0.2; }
-  50% { opacity: 0.4; }
+.speed-lines-bg {
+  background: repeating-conic-gradient(
+    from 0deg,
+    rgba(232, 0, 58, 0.08) 0deg 2deg,
+    transparent 2deg 12deg,
+    rgba(123, 47, 255, 0.08) 12deg 14deg,
+    transparent 14deg 24deg
+  );
+  mask-image: radial-gradient(circle, transparent 40%, black 100%);
+  -webkit-mask-image: radial-gradient(circle, transparent 40%, black 100%);
+  animation: speed-lines-spin 25s linear infinite;
 }
 
-.animate-pulse-glow {
-  animation: pulse-glow 3s ease-in-out infinite;
-}
-
-/* Custom Grid scanlines for ambient command center feel */
+/* Scanlines overlay */
 .scanlines {
   background: linear-gradient(
     rgba(18, 16, 16, 0) 50%, 
-    rgba(0, 0, 0, 0.25) 50%
+    rgba(0, 0, 0, 0.3) 50%
   );
   background-size: 100% 4px;
 }
 
-/* Scanline sweep animation */
-@keyframes scanning {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100%); }
+/* Anime Aura System (9 Unique High-Fidelity Auras) */
+
+/* 1. Chainsaw Man: Shaking neon-orange/red aura with high-contrast sharp edges */
+@keyframes chainsaw-shake {
+  0%, 100% { transform: translate(0, 0) skewX(-1deg); filter: drop-shadow(0 0 3px #ff3c00); }
+  25% { transform: translate(-0.5px, 0.5px) skewX(1deg); filter: drop-shadow(0 0 7px #ff6a00); }
+  50% { transform: translate(-0.5px, -0.5px) skewX(0deg); filter: drop-shadow(0 0 4px #e8003a); }
+  75% { transform: translate(0.5px, 0.5px) skewX(-1deg); filter: drop-shadow(0 0 8px #ff3c00); }
+}
+.aura-chainsaw-man {
+  border: 1.5px solid #ff4500 !important;
+  animation: chainsaw-shake 0.15s infinite;
+}
+.aura-chainsaw-man:hover {
+  box-shadow: 0 0 15px rgba(255, 69, 0, 0.6) !important;
 }
 
-.scanline-sweep::after {
-  content: " ";
-  display: block;
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(rgba(18, 16, 16, 0) 0%, rgba(139, 92, 246, 0.05) 10%, rgba(139, 92, 246, 0.05) 90%, rgba(18, 16, 16, 0) 100%);
-  animation: scanning 10s linear infinite;
-  pointer-events: none;
-  z-index: 100;
+/* 2. Solo Leveling: Pulsing dark-violet monarch glow */
+@keyframes solo-pulse {
+  0%, 100% { 
+    box-shadow: 0 0 6px #7b2fff, inset 0 0 3px #7b2fff;
+    filter: drop-shadow(0 0 2px #7b2fff);
+  }
+  50% { 
+    box-shadow: 0 0 16px #7b2fff, inset 0 0 8px #7b2fff;
+    filter: drop-shadow(0 0 6px #9d4eff);
+  }
+}
+.aura-solo-leveling {
+  border: 1.5px solid #7b2fff !important;
+  animation: solo-pulse 2s infinite ease-in-out;
+}
+
+/* 3. Cyberpunk: Cyan/magenta glitch offset shadow */
+@keyframes cyberpunk-glitch-anim {
+  0%, 100% { 
+    text-shadow: 1px 1px 0px #00ffff, -1px -1px 0px #ff00ff;
+    box-shadow: 2px 2px 0px #ff00ff, -2px -2px 0px #00ffff;
+  }
+  50% { 
+    text-shadow: -1px 1px 0px #ff00ff, 1px -1px 0px #00ffff;
+    box-shadow: -2px 2px 0px #00ffff, 2px -2px 0px #ff00ff;
+  }
+}
+.aura-cyberpunk {
+  border: 1.5px solid #00ffff !important;
+  animation: cyberpunk-glitch-anim 0.8s infinite steps(2);
+}
+
+/* 4. Demon Slayer: Crimson-orange solar aura */
+@keyframes demon-slayer-fire {
+  0%, 100% { box-shadow: 0 0 8px #e8003a, 0 0 2px #f5c842; }
+  50% { box-shadow: 0 0 16px #ff3c00, 0 0 6px #f5c842; }
+}
+.aura-demon-slayer {
+  border: 1.5px solid #e8003a !important;
+  animation: demon-slayer-fire 1.5s infinite ease-in-out;
+}
+
+/* 5. Jujutsu Kaisen: Flickering deep blue cursed energy */
+@keyframes jjk-cursed {
+  0%, 100% { box-shadow: 0 0 6px #00d2ff, 0 0 2px #0a0a0f; }
+  50% { box-shadow: 0 0 14px #0055ff, 0 0 8px #7b2fff; }
+}
+.aura-jujutsu-kaisen {
+  border: 1.5px solid #00d2ff !important;
+  animation: jjk-cursed 1.8s infinite ease-in-out;
+}
+
+/* 6. Bleach: White-blue sharp reiatsu outline */
+@keyframes bleach-reiatsu {
+  0%, 100% { box-shadow: 0 0 4px #ffffff, 0 0 1px #06B6D4; }
+  50% { box-shadow: 0 0 12px #ffffff, 0 0 5px #06B6D4; }
+}
+.aura-bleach {
+  border: 1.5px solid #ffffff !important;
+  animation: bleach-reiatsu 2.2s infinite ease-in-out;
+}
+
+/* 7. Frieren: Soft, elegant golden mana glow */
+@keyframes frieren-glow {
+  0%, 100% { box-shadow: 0 0 5px #f5c842, inset 0 0 2px rgba(245,200,66,0.3); opacity: 0.95; }
+  50% { box-shadow: 0 0 12px #f5c842, inset 0 0 5px rgba(245,200,66,0.5); opacity: 1; }
+}
+.aura-frieren {
+  border: 1.5px solid #f5c842 !important;
+  animation: frieren-glow 3s infinite ease-in-out;
+}
+
+/* 8. Evangelion: Green-purple toxic bio-glow */
+@keyframes eva-glow {
+  0%, 100% { box-shadow: 0 0 6px #39ff14, 0 0 2px #7b2fff; }
+  50% { box-shadow: 0 0 14px #39ff14, 0 0 8px #7b2fff; }
+}
+.aura-evangelion {
+  border: 1.5px solid #39ff14 !important;
+  animation: eva-glow 2.5s infinite ease-in-out;
+}
+
+/* 9. Normal: Standard minimalist dark gray/red frame */
+.aura-normal {
+  border: 1.5px solid #27272a !important;
+}
+.aura-normal:hover {
+  border-color: var(--accent-red) !important;
+  box-shadow: 0 0 8px rgba(232, 0, 58, 0.25) !important;
+}
+
+/* Custom completion flash */
+@keyframes completion-pulse {
+  0%, 100% { box-shadow: 0 0 10px #f5c842; }
+  50% { box-shadow: 0 0 25px #f5c842, 0 0 10px #e8003a; }
+}
+.anime-completed-card {
+  border: 2px solid var(--accent-gold) !important;
+  animation: completion-pulse 3s infinite ease-in-out;
+}
+
+/* Micro border flash for log action */
+@keyframes border-flash {
+  0% { border-color: #ffffff; box-shadow: 0 0 15px #ffffff; }
+  100% { border-color: inherit; box-shadow: none; }
+}
+.flash-border-active {
+  animation: border-flash 0.4s ease-out;
 }
