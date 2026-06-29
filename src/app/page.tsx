@@ -84,7 +84,32 @@ export default function Home() {
     const storedFocus = localStorage.getItem('anifocus_focus_id');
 
     if (storedAnime) {
-      setAnimeList(JSON.parse(storedAnime));
+      try {
+        let list = JSON.parse(storedAnime) as AnimeItem[];
+        let migrated = false;
+        list = list.map(anime => {
+          const titleNormalized = anime.title.toLowerCase().trim();
+          if (
+            titleNormalized === 'jujutsu kaisen (2 seasons (47 episodes))' || 
+            (titleNormalized.includes('jujutsu kaisen') && anime.totalEps === 47)
+          ) {
+            migrated = true;
+            return {
+              ...anime,
+              title: 'Jujutsu Kaisen (3 Seasons (59 Episodes))',
+              totalEps: 59
+            };
+          }
+          return anime;
+        });
+
+        if (migrated) {
+          localStorage.setItem('anifocus_anime', JSON.stringify(list));
+        }
+        setAnimeList(list);
+      } catch (e) {
+        setAnimeList(INITIAL_ANIME);
+      }
     } else {
       setAnimeList(INITIAL_ANIME);
     }
@@ -506,6 +531,56 @@ export default function Home() {
   const handleAddNewAnimeSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formTitle.trim()) return;
+
+    // Check if an anime with the same title or same root title (before parenthesis) exists
+    const existingIndex = animeList.findIndex(a => {
+      const aRoot = a.title.split('(')[0].toLowerCase().trim();
+      const formRoot = formTitle.split('(')[0].toLowerCase().trim();
+      return aRoot === formRoot;
+    });
+
+    if (existingIndex > -1) {
+      const existing = animeList[existingIndex];
+      const genresArray = formGenres.split(',').map(g => g.trim()).filter(Boolean);
+      
+      const updatedAnime: AnimeItem = {
+        ...existing,
+        title: formTitle,
+        totalEps: formTotalEps,
+        genres: genresArray.length > 0 ? genresArray : existing.genres,
+        synopsis: formSynopsis.trim() || existing.synopsis,
+      };
+
+      // Reset completed status back to watching if more episodes were added
+      if (updatedAnime.status === 'completed' && updatedAnime.currentEp < updatedAnime.totalEps) {
+        updatedAnime.status = 'watching';
+        updatedAnime.completionDate = undefined;
+      }
+
+      const updatedList = [...animeList];
+      updatedList[existingIndex] = updatedAnime;
+
+      setAnimeList(updatedList);
+      saveState(updatedList, profile, achievements);
+
+      // Reset Form
+      setFormTitle('');
+      setFormTotalEps(12);
+      setFormStatus('watching');
+      setFormGenres('Action');
+      setFormSynopsis('');
+      setFormRating(10);
+      setFormReview('');
+      setSearchQuery('');
+      setIsAddModalOpen(false);
+
+      confetti({
+        particleCount: 85,
+        spread: 65,
+        origin: { y: 0.8 }
+      });
+      return;
+    }
 
     const id = formTitle.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') + '-' + Date.now();
     const genresArray = formGenres.split(',').map(g => g.trim()).filter(Boolean);
