@@ -85,28 +85,7 @@ export default function Home() {
 
     if (storedAnime) {
       try {
-        let list = JSON.parse(storedAnime) as AnimeItem[];
-        let migrated = false;
-        list = list.map(anime => {
-          const titleNormalized = anime.title.toLowerCase().trim();
-          if (
-            titleNormalized === 'jujutsu kaisen (2 seasons (47 episodes))' || 
-            (titleNormalized.includes('jujutsu kaisen') && anime.totalEps === 47)
-          ) {
-            migrated = true;
-            return {
-              ...anime,
-              title: 'Jujutsu Kaisen (3 Seasons (59 Episodes))',
-              totalEps: 59
-            };
-          }
-          return anime;
-        });
-
-        if (migrated) {
-          localStorage.setItem('anifocus_anime', JSON.stringify(list));
-        }
-        setAnimeList(list);
+        setAnimeList(JSON.parse(storedAnime));
       } catch (e) {
         setAnimeList(INITIAL_ANIME);
       }
@@ -534,9 +513,36 @@ export default function Home() {
 
     // Check if an anime with the same title or same root title (before parenthesis) exists
     const existingIndex = animeList.findIndex(a => {
+      const cleanA = a.title.toLowerCase().trim();
+      const cleanForm = formTitle.toLowerCase().trim();
+      
+      // If titles are exactly identical
+      if (cleanA === cleanForm) return true;
+      
+      // If neither title contains parenthesis, check exact match
+      if (!a.title.includes('(') && !formTitle.includes('(')) {
+        return cleanA === cleanForm;
+      }
+      
+      // Check if they share the exact same root title and same season/movie tag
+      const getSeasonOrMovieTag = (title: string) => {
+        const lower = title.toLowerCase();
+        const seasonMatch = lower.match(/(season \d+|movie)/);
+        return seasonMatch ? seasonMatch[0] : null;
+      };
+      
       const aRoot = a.title.split('(')[0].toLowerCase().trim();
       const formRoot = formTitle.split('(')[0].toLowerCase().trim();
-      return aRoot === formRoot;
+      
+      if (aRoot === formRoot) {
+        const aTag = getSeasonOrMovieTag(a.title);
+        const formTag = getSeasonOrMovieTag(formTitle);
+        // If neither has a season/movie tag, then they are duplicates
+        // If they have different tags, they are different
+        return aTag === formTag;
+      }
+      
+      return false;
     });
 
     if (existingIndex > -1) {

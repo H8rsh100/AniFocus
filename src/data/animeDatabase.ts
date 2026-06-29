@@ -38,12 +38,30 @@ export const ANIME_DATABASE: DatabaseAnime[] = [
   },
   {
     id: 'jjk',
-    title: 'Jujutsu Kaisen',
-    totalEps: 59,
+    title: 'Jujutsu Kaisen (2 Seasons (47 Episodes))',
+    totalEps: 47,
     genres: ['Action', 'Fantasy', 'School'],
-    synopsis: 'A boy fights... for "the right death." Hardship, regret, shame: the negative emotions that humans feel become Curses that lurk in our everyday lives. Yuji Itadori is a boy with tremendous physical strength, though he lives a completely ordinary high school life.',
+    synopsis: 'A boy fights... for "the right death." Yuji Itadori, a high school student with outstanding physical traits, swallows a cursed talisman to save his friends, becoming the vessel for Ryomen Sukuna (King of Curses). Tokyo Prefectural Jujutsu High School enrolls him to exorcise Sukuna\'s other fingers.',
     type: 'Series',
-    info: '3 Seasons (59 Episodes) • 1 Movie (Jujutsu Kaisen 0)'
+    info: '2 Seasons (47 Episodes)'
+  },
+  {
+    id: 'jjk-s3',
+    title: 'Jujutsu Kaisen (Season 3)',
+    totalEps: 12,
+    genres: ['Action', 'Fantasy', 'School'],
+    synopsis: 'Following the devastating Shibuya Incident, Tokyo lies in ruins. The Culling Game begins—a deadly battle royale orchestrated by Kenjaku, forcing sorcerers and cursed vessels to fight for survival.',
+    type: 'Series',
+    info: 'Season 3 (12 Episodes)'
+  },
+  {
+    id: 'jjk-0',
+    title: 'Jujutsu Kaisen 0 (Movie)',
+    totalEps: 1,
+    genres: ['Action', 'Fantasy', 'School'],
+    synopsis: 'Prequel film following Yuta Okkotsu, a nervous high school student who is haunted by Rika, the curse of his childhood friend. Gojo Satoru mentors Yuta at Tokyo Prefectural Jujutsu High to help him control the grade-special curse.',
+    type: 'Movie',
+    info: '1 Movie (Prequel)'
   },
   {
     id: 'fma_b',
