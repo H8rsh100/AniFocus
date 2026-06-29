@@ -47,8 +47,8 @@ export default function Sidebar({ activeTab, setActiveTab, profile }: SidebarPro
             <h1 className="font-bold text-xl tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-purple-400">
               ANI<span className="text-neon-blue font-black">FOCUS</span>
             </h1>
-            <p className="text-[9px] uppercase tracking-widest text-primary-purple font-semibold">
-              COMPLETION PROTOCOL
+            <p className="text-[9px] uppercase tracking-widest text-primary-purple font-semibold flex items-center gap-1.5">
+              COMPLETION PROTOCOL <span className="text-gray-500 font-mono text-[8px] lowercase">(v1.1.3)</span>
             </p>
           </div>
         </div>
