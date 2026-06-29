@@ -39,11 +39,11 @@ export const ANIME_DATABASE: DatabaseAnime[] = [
   {
     id: 'jjk',
     title: 'Jujutsu Kaisen',
-    totalEps: 47,
+    totalEps: 59,
     genres: ['Action', 'Fantasy', 'School'],
     synopsis: 'A boy fights... for "the right death." Hardship, regret, shame: the negative emotions that humans feel become Curses that lurk in our everyday lives. Yuji Itadori is a boy with tremendous physical strength, though he lives a completely ordinary high school life.',
     type: 'Series',
-    info: '2 Seasons (47 Episodes) • 1 Movie (Jujutsu Kaisen 0)'
+    info: '3 Seasons (59 Episodes) • 1 Movie (Jujutsu Kaisen 0)'
   },
   {
     id: 'fma_b',
@@ -242,15 +242,6 @@ export const ANIME_DATABASE: DatabaseAnime[] = [
     synopsis: 'Shoya Ishida, a former school bully, attempts to make amends with Shoko Nishimiya, a deaf girl he bullied in elementary school, hoping to redeem himself in the eyes of his peers and himself.',
     type: 'Movie',
     info: 'Standalone Movie (130 Minutes)'
-  },
-  {
-    id: 'jjk0',
-    title: 'Jujutsu Kaisen 0',
-    totalEps: 1,
-    genres: ['Action', 'Fantasy'],
-    synopsis: 'Prequel to Jujutsu Kaisen. Yuta Okkotsu, a high schooler suffering from a curse by his late childhood friend Rika, enters Jujutsu High under Satoru Gojo\'s guidance to learn how to control his power.',
-    type: 'Movie',
-    info: 'Prequel Movie (105 Minutes)'
   },
   {
     id: 'mugen_train',
