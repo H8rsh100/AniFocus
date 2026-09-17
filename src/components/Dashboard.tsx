@@ -81,45 +81,18 @@ export default function Dashboard({
   // Helper to map genres/titles to custom CSS aura classes from globals.css
   const getAuraClassForAnime = (genres: string[], title: string): string => {
     const titleLower = title.toLowerCase();
-    
-    // Movie check
-    if (titleLower.includes('movie') || titleLower.includes('film') || genres.some(g => g.toLowerCase().includes('movie'))) {
-      return 'aura-movie';
-    }
-    
     const genreSet = new Set(genres.map(g => g.toLowerCase()));
-    
-    // Cyberpunk/Sci-Fi check
-    if (genreSet.has('cyberpunk') || genreSet.has('sci-fi') || titleLower.includes('cyber')) {
-      return 'aura-cyberpunk';
-    }
-    // Mecha check
-    if (genreSet.has('mecha') || genreSet.has('robot') || titleLower.includes('gundam')) {
-      return 'aura-mecha';
-    }
-    // Sports check
-    if (genreSet.has('sports') || titleLower.includes('blue lock') || titleLower.includes('haikyu')) {
-      return 'aura-sports';
-    }
-    // Isekai check
-    if (genreSet.has('isekai') || titleLower.includes('re:') || titleLower.includes('world') || titleLower.includes('slime')) {
-      return 'aura-isekai';
-    }
-    // Psychological/Horror/Thriller check
-    if (genreSet.has('psychological') || genreSet.has('horror') || genreSet.has('thriller') || titleLower.includes('death')) {
-      return 'aura-psychological';
-    }
-    // Slice of life / Drama check
-    if (genreSet.has('slice of life') || genreSet.has('romance') || genreSet.has('drama')) {
-      return 'aura-slice';
-    }
-    // Fantasy/Adventure check
-    if (genreSet.has('fantasy') || genreSet.has('magic') || genreSet.has('adventure')) {
-      return 'aura-fantasy';
-    }
-    
-    // Shonen default aura
-    return 'aura-shonen';
+
+    if (titleLower.includes('chainsaw man')) return 'aura-chainsaw-man';
+    if (titleLower.includes('solo leveling')) return 'aura-solo-leveling';
+    if (genreSet.has('cyberpunk') || titleLower.includes('cyberpunk')) return 'aura-cyberpunk';
+    if (titleLower.includes('demon slayer') || titleLower.includes('kimetsu')) return 'aura-demon-slayer';
+    if (titleLower.includes('jujutsu kaisen') || titleLower.includes('jjk')) return 'aura-jujutsu-kaisen';
+    if (titleLower.includes('bleach')) return 'aura-bleach';
+    if (titleLower.includes('frieren')) return 'aura-frieren';
+    if (titleLower.includes('evangelion') || titleLower.includes('eva')) return 'aura-evangelion';
+
+    return 'aura-normal';
   };
 
   const kanbanColumns: { id: KanbanCategory; title: string; color: string; bg: string; border: string }[] = [

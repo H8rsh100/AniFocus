@@ -314,3 +314,55 @@ body {
 .flash-border-active {
   animation: border-flash 0.4s ease-out;
 }
+
+/* Utility Animations & Classes */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+.animate-pulse-glow {
+  animation: pulse-glow 3s infinite ease-in-out;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+.animate-float {
+  animation: float 4s infinite ease-in-out;
+}
+
+@keyframes bounceBar {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.8); }
+}
+
+/* Glow Effects */
+.glow-purple {
+  box-shadow: 0 0 15px rgba(123, 47, 255, 0.4), 0 0 30px rgba(123, 47, 255, 0.15);
+}
+.glow-purple:hover {
+  box-shadow: 0 0 20px rgba(123, 47, 255, 0.6), 0 0 40px rgba(123, 47, 255, 0.25);
+}
+.glow-purple-hover:hover {
+  box-shadow: 0 0 12px rgba(123, 47, 255, 0.3);
+}
+.glow-text-purple {
+  text-shadow: 0 0 20px rgba(123, 47, 255, 0.5), 0 0 40px rgba(123, 47, 255, 0.2);
+}
+.glow-text-blue {
+  text-shadow: 0 0 20px rgba(6, 182, 212, 0.5), 0 0 40px rgba(6, 182, 212, 0.2);
+}
+
+/* Glass Panels */
+.glass-panel {
+  background: rgba(17, 17, 24, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.glass-panel-purple {
+  background: rgba(17, 17, 24, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-color: rgba(123, 47, 255, 0.25);
+}
