@@ -830,14 +830,14 @@ export default function Home() {
             <div className="space-y-1.5 mb-6 relative">
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1">
                 <Search className="w-3.5 h-3.5 text-primary-purple" />
-                Quick Import from Database (100+ Series & Movies)
+                Quick Import from Database
               </label>
               <div className="relative">
                 <input 
                   type="text" 
                   value={searchQuery}
                   onChange={(e) => { setSearchQuery(e.target.value); setExpandedSearchId(null); }}
-                  placeholder="Search: type 2+ letters (e.g. Titan, Solo, Frieren...)"
+                  placeholder="Search anime..."
                   className="w-full bg-zinc-900 border border-zinc-800/80 rounded-xl p-3 pl-10 text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-neon-blue transition-all"
                 />
                 <Search className="absolute left-3.5 top-3.5 w-4 h-4 text-zinc-600" />
@@ -939,7 +939,7 @@ export default function Home() {
                   required
                   value={formTitle}
                   onChange={(e) => setFormTitle(e.target.value)}
-                  placeholder="e.g. Vinland Saga"
+                  placeholder="Anime title"
                   className="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-primary-purple transition-all"
                 />
               </div>
