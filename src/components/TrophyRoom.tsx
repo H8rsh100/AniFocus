@@ -41,11 +41,12 @@ export default function TrophyRoom({ animeList, achievements, profile, onDeleteA
   const [consolidate, setConsolidate] = useState(true);
   const completedList = animeList.filter(a => a.status === 'completed');
 
-  // Find fully completed franchises
+  // Find franchises with at least 2 completed entries
   const completedFranchises = FRANCHISES.filter(franchise => {
-    return franchise.titles.every(targetTitle => {
+    const matchCount = franchise.titles.filter(targetTitle => {
       return completedList.some(c => c.title.toLowerCase().includes(targetTitle.toLowerCase()));
-    });
+    }).length;
+    return matchCount >= 2;
   });
 
   // Filter which items to show individually
@@ -96,6 +97,10 @@ export default function TrophyRoom({ animeList, achievements, profile, onDeleteA
               const constituents = completedList.filter(c =>
                 franchise.titles.some(t => c.title.toLowerCase().includes(t.toLowerCase()))
               );
+              const matchedCount = franchise.titles.filter(t =>
+                completedList.some(c => c.title.toLowerCase().includes(t.toLowerCase()))
+              ).length;
+              const isPartial = matchedCount < franchise.titles.length;
               
               const totalEps = constituents.reduce((acc, curr) => acc + curr.totalEps, 0);
               const totalHours = Math.round(constituents.reduce((acc, curr) => acc + (curr.totalEps * curr.hoursPerEp), 0));
@@ -118,7 +123,7 @@ export default function TrophyRoom({ animeList, achievements, profile, onDeleteA
                   <div className="flex justify-between items-start gap-4 z-10">
                     <div>
                       <span className="text-[9px] bg-amber-500/20 border border-amber-500/40 text-amber-400 px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider flex items-center gap-1.5 w-fit">
-                        👑 FRANCHISE MASTERY
+                        👑 FRANCHISE MASTERY {isPartial && `(${matchedCount}/${franchise.titles.length})`}
                       </span>
                       <h3 className="font-extrabold text-amber-400 text-xl tracking-wide mt-2 glow-text-gold">
                         {franchise.masterTitle}
