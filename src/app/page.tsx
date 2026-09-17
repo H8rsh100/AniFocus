@@ -33,11 +33,9 @@ import TrophyRoom from '../components/TrophyRoom';
 import Statistics from '../components/Statistics';
 import Graveyard from '../components/Graveyard';
 import AnimeDetailModal from '../components/AnimeDetailModal';
-import LandingHero from '../components/LandingHero';
 
 export default function Home() {
   const [hasMounted, setHasMounted] = useState(false);
-  const [hasEntered, setHasEntered] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [animeList, setAnimeList] = useState<AnimeItem[]>([]);
   const [profile, setProfile] = useState<UserProfile>(INITIAL_PROFILE);
@@ -68,7 +66,6 @@ export default function Home() {
   // Mount check for Next.js hydration safety
   useEffect(() => {
     setHasMounted(true);
-    setHasEntered(localStorage.getItem('anifocus_has_entered') === 'true');
     
     // Clear out stale mock data from previous version if not reset yet
     const hasResetStale = localStorage.getItem('anifocus_reset_start_fresh');
@@ -227,10 +224,6 @@ export default function Home() {
 
   if (!hasMounted) {
     return <div className="min-h-screen bg-cyber-black flex items-center justify-center text-gray-400">Loading Console...</div>;
-  }
-
-  if (!hasEntered) {
-    return <LandingHero onStart={() => { setHasEntered(true); localStorage.setItem('anifocus_has_entered', 'true'); }} />;
   }
 
   // 1. XP level up trigger logic
