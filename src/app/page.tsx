@@ -42,6 +42,7 @@ export default function Home() {
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [activeFocusId, setActiveFocusId] = useState<string | null>(null);
   const [selectedDetailAnime, setSelectedDetailAnime] = useState<AnimeItem | null>(null);
+  const [watchHistory, setWatchHistory] = useState<{ date: string; eps: number }[]>([]);
   
   // Modals state
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -107,6 +108,11 @@ export default function Home() {
 
     if (storedFocus) {
       setActiveFocusId(storedFocus);
+    }
+
+    const storedHistory = localStorage.getItem('anifocus_watch_history');
+    if (storedHistory) {
+      try { setWatchHistory(JSON.parse(storedHistory)); } catch (e) { setWatchHistory([]); }
     }
   }, []);
 
@@ -220,6 +226,7 @@ export default function Home() {
     localStorage.setItem('anifocus_anime', JSON.stringify(updatedAnime));
     localStorage.setItem('anifocus_profile', JSON.stringify(updatedProfile));
     localStorage.setItem('anifocus_achievements', JSON.stringify(updatedAchievements));
+    localStorage.setItem('anifocus_watch_history', JSON.stringify(watchHistory));
   };
 
   if (!hasMounted) {
@@ -332,6 +339,16 @@ export default function Home() {
 
       const result = addXp(finalXpGain, updatedProfile, updatedAchievements);
       
+      // Track watch history for stats
+      setWatchHistory(prev => {
+        const existing = prev.find(h => h.date === today);
+        const updated = existing
+          ? prev.map(h => h.date === today ? { ...h, eps: h.eps + epDiff } : h)
+          : [...prev, { date: today, eps: epDiff }];
+        localStorage.setItem('anifocus_watch_history', JSON.stringify(updated));
+        return updated;
+      });
+
       setAnimeList(updatedList);
       setProfile(result.profile);
       setAchievements(result.achievements);
@@ -767,6 +784,7 @@ export default function Home() {
             <Statistics 
               animeList={animeList} 
               profile={profile} 
+              watchHistory={watchHistory}
             />
           )}
 

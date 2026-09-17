@@ -20,9 +20,10 @@ import { AnimeItem } from '../types/anime';
 interface StatisticsProps {
   animeList: AnimeItem[];
   profile: any;
+  watchHistory?: { date: string; eps: number }[];
 }
 
-export default function Statistics({ animeList, profile }: StatisticsProps) {
+export default function Statistics({ animeList, profile, watchHistory = [] }: StatisticsProps) {
   
   // 1. Calculate Genre Distribution
   const genreCounts: { [key: string]: number } = {};
@@ -65,19 +66,26 @@ export default function Statistics({ animeList, profile }: StatisticsProps) {
     }
   ];
 
-  // 3. Monthly watch trend (mock static data representing the user's progress)
-  const monthlyTrendData = [
-    { name: 'Jan', episodes: 25 },
-    { name: 'Feb', episodes: 45 },
-    { name: 'Mar', episodes: 30 },
-    { name: 'Apr', episodes: 68 },
-    { name: 'May', episodes: 50 },
-    { name: 'Jun', episodes: profile.streak * 6 + 25 }, // responsive based on current streak
-  ];
+  // 3. Monthly watch trend from real watchHistory
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const now = new Date();
+  const monthlyTrendData = Array.from({ length: 6 }, (_, i) => {
+    const d = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1);
+    const monthKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    const label = monthNames[d.getMonth()];
+    const eps = watchHistory
+      .filter(h => h.date.startsWith(monthKey))
+      .reduce((sum, h) => sum + h.eps, 0);
+    return { name: label, episodes: eps };
+  });
 
   // 4. Personal Insights
   const favoriteGenre = Object.keys(genreCounts).reduce((a, b) => genreCounts[a] > genreCounts[b] ? a : b, 'Action');
-  const avgRating = animeList.filter(a => a.rating).reduce((acc, curr, _, array) => acc + (curr.rating || 0) / array.length, 0);
+  const avgRating = animeList.filter(a => a.rating).length > 0
+    ? (animeList.filter(a => a.rating).reduce((acc, curr) => acc + (curr.rating || 0), 0) / animeList.filter(a => a.rating).length)
+    : 0;
+  const totalEpsLogged = animeList.reduce((sum, a) => sum + a.currentEp, 0);
+  const focusIndex = completionRate >= 80 ? 'High Efficiency' : completionRate >= 50 ? 'Moderate Pace' : 'Building Momentum';
 
   return (
     <div className="space-y-10">
@@ -209,7 +217,7 @@ export default function Statistics({ animeList, profile }: StatisticsProps) {
               <p className="text-[9px] text-gray-500 uppercase tracking-widest font-black">Favorite Genre</p>
               <h4 className="text-lg font-bold text-white mt-0.5">{favoriteGenre}</h4>
               <p className="text-[11px] text-gray-400 mt-1 leading-relaxed">
-                You watch Action series {Math.round(genreCounts[favoriteGenre] || 2)}x faster and complete them more consistently than other categories.
+                {favoriteGenre} appears {genreCounts[favoriteGenre] || 0} times across your active and completed collection.
               </p>
             </div>
           </div>
@@ -220,9 +228,9 @@ export default function Statistics({ animeList, profile }: StatisticsProps) {
             </div>
             <div>
               <p className="text-[9px] text-gray-500 uppercase tracking-widest font-black">Average Rating Given</p>
-              <h4 className="text-lg font-bold text-white mt-0.5">{avgRating ? `${Math.round(avgRating * 10) / 10} / 10` : '8.5 / 10'}</h4>
+              <h4 className="text-lg font-bold text-white mt-0.5">{avgRating ? `${Math.round(avgRating * 10) / 10} / 10` : 'N/A'}</h4>
               <p className="text-[11px] text-gray-400 mt-1 leading-relaxed">
-                Your rating scale is selective, indicating a high standard for narrative completion. Nice choices!
+                Based on {animeList.filter(a => a.rating).length} rated series in your collection.
               </p>
             </div>
           </div>
@@ -246,9 +254,9 @@ export default function Statistics({ animeList, profile }: StatisticsProps) {
             </div>
             <div>
               <p className="text-[9px] text-gray-500 uppercase tracking-widest font-black">Focus Completion Index</p>
-              <h4 className="text-lg font-bold text-white mt-0.5">High Efficiency</h4>
+              <h4 className="text-lg font-bold text-white mt-0.5">{focusIndex}</h4>
               <p className="text-[11px] text-gray-400 mt-1 leading-relaxed">
-                By maintaining focus on 1 target series, you complete seasons in under 9 days on average.
+                {totalEpsLogged} total episodes logged across {animeList.filter(a => a.status === 'watching' || a.status === 'completed').length} series.
               </p>
             </div>
           </div>
