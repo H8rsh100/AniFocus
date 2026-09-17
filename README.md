@@ -74,7 +74,6 @@ src/
 │   ├── Statistics.tsx   # Recharts Analytics, Real Watch Data
 │   ├── Graveyard.tsx    # Dropped Series with Revive Mechanic
 │   ├── AnimeDetailModal.tsx  # Detail View with Tabs (Info, AI Insights, Reviews)
-│   └── LandingHero.tsx  # Public Splash Page (unused in current build)
 ├── data/
 │   ├── animeDatabase.ts # Registry of 78 preloaded series and movies
 │   └── initialData.ts   # Otaku Rank boundaries, Achievements & profile starters
@@ -104,7 +103,6 @@ src/
 ## 🌐 Continuous Deployment
 This codebase is fully type-safe and verified for continuous integration.
 * **Netlify**: Connect your GitHub repository, set Build Command to `npm run build`, and Publish Directory to `.next`. Every commit push to `master` will trigger an automated build.
-* **Vercel**: Connect your GitHub repository — auto-detects Next.js and deploys on every push to `master`.
 
 ---
 
