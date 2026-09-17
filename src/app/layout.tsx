@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AniFocus — Stop Starting Anime. Start Finishing Them.",
+  title: "AniFocus - Stop Starting Anime. Start Finishing Them.",
   description: "Track your journey, maintain momentum, and complete more anime than ever before. Gamified anime progression dashboard and focus command center.",
 };
 
