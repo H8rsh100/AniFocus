@@ -231,20 +231,25 @@ export default function TrophyRoom({ animeList, achievements, profile, onDeleteA
             {consolidatedCompletedList.map((anime) => (
               <div 
                 key={anime.id}
-                className="group relative bg-cyber-gray border border-zinc-800/80 rounded-2xl p-5 flex flex-col justify-between space-y-4 glow-purple-hover transition-all duration-300 glass-panel-purple"
+                className="group relative bg-cyber-gray border border-primary-purple/30 rounded-2xl p-5 flex flex-col justify-between space-y-4 transition-all duration-300 overflow-hidden"
               >
+                {/* Top gradient accent */}
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-purple via-indigo-500 to-neon-blue rounded-t-2xl"></div>
+                
+                {/* Background glow */}
+                <div className="absolute top-0 right-0 w-40 h-40 bg-primary-purple/8 rounded-full blur-[60px] pointer-events-none group-hover:bg-primary-purple/15 transition-all"></div>
+                
                 {/* Header info */}
-                <div className="flex justify-between items-start gap-4">
+                <div className="flex justify-between items-start gap-4 z-10">
                   <div>
                     <span className="text-[9px] bg-primary-purple/15 border border-primary-purple/30 text-primary-purple-hover px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">
                       {anime.genres[0]}
                     </span>
-                    <h3 className="font-extrabold text-white text-xl tracking-wide mt-2 glow-text-purple">
+                    <h3 className="font-extrabold text-white text-lg tracking-wide mt-2 line-clamp-2">
                       {anime.title}
                     </h3>
                   </div>
                   
-                  {/* Rating value and delete button */}
                   <div className="flex items-center gap-2 shrink-0">
                     <div className="bg-amber-500/10 border border-amber-500/40 text-amber-400 text-[10px] font-black tracking-widest px-3 py-1 rounded-full flex items-center gap-1.5 uppercase shadow-lg">
                       <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
@@ -267,7 +272,7 @@ export default function TrophyRoom({ animeList, achievements, profile, onDeleteA
                 </div>
 
                 {/* Metadata details */}
-                <div className="grid grid-cols-2 gap-2 text-[11px] text-gray-400 font-semibold border-b border-zinc-900 pb-3 pt-1">
+                <div className="grid grid-cols-2 gap-2 text-[11px] text-gray-400 font-semibold border-b border-zinc-800/60 pb-3 pt-1 z-10">
                   <span className="flex items-center gap-1.5">
                     <Calendar className="w-3.5 h-3.5 text-primary-purple" />
                     Completed: {anime.completionDate || 'Recent'}
@@ -280,7 +285,7 @@ export default function TrophyRoom({ animeList, achievements, profile, onDeleteA
 
                 {/* Favorite Moments Quote */}
                 {anime.favoriteMoments && (
-                  <div className="space-y-1">
+                  <div className="space-y-1 z-10">
                     <p className="text-[9px] text-primary-purple-hover uppercase font-bold tracking-widest flex items-center gap-1">
                       <Heart className="w-3 h-3 fill-current" />
                       Favorite Moment
@@ -293,8 +298,8 @@ export default function TrophyRoom({ animeList, achievements, profile, onDeleteA
 
                 {/* Review */}
                 {anime.reviews && (
-                  <div className="space-y-1">
-                    <p className="text-[9px] text-cyan-400 uppercase font-bold tracking-widest flex items-center gap-1">
+                  <div className="space-y-1 z-10">
+                    <p className="text-[9px] text-neon-blue uppercase font-bold tracking-widest flex items-center gap-1">
                       <MessageSquare className="w-3 h-3" />
                       Review Summary
                     </p>
