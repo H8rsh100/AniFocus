@@ -83,14 +83,26 @@ export default function Dashboard({
     const titleLower = title.toLowerCase();
     const genreSet = new Set(genres.map(g => g.toLowerCase()));
 
+    // Exact title matches first
     if (titleLower.includes('chainsaw man')) return 'aura-chainsaw-man';
     if (titleLower.includes('solo leveling')) return 'aura-solo-leveling';
-    if (genreSet.has('cyberpunk') || titleLower.includes('cyberpunk')) return 'aura-cyberpunk';
+    if (titleLower.includes('cyberpunk')) return 'aura-cyberpunk';
     if (titleLower.includes('demon slayer') || titleLower.includes('kimetsu')) return 'aura-demon-slayer';
     if (titleLower.includes('jujutsu kaisen') || titleLower.includes('jjk')) return 'aura-jujutsu-kaisen';
     if (titleLower.includes('bleach')) return 'aura-bleach';
     if (titleLower.includes('frieren')) return 'aura-frieren';
     if (titleLower.includes('evangelion') || titleLower.includes('eva')) return 'aura-evangelion';
+
+    // Genre-based fallbacks
+    if (genreSet.has('mecha') || genreSet.has('sci-fi')) return 'aura-evangelion';
+    if (genreSet.has('supernatural') || genreSet.has('horror') || genreSet.has('thriller')) return 'aura-jujutsu-kaisen';
+    if (genreSet.has('fantasy') || genreSet.has('adventure')) return 'aura-frieren';
+    if (genreSet.has('drama') || genreSet.has('psychological')) return 'aura-solo-leveling';
+    if (genreSet.has('sports') || genreSet.has('comedy')) return 'aura-chainsaw-man';
+    if (genreSet.has('romance') || genreSet.has('slice of life')) return 'aura-demon-slayer';
+
+    // Action / Shonen catch-all
+    if (genreSet.has('action')) return 'aura-bleach';
 
     return 'aura-normal';
   };
