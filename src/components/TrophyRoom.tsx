@@ -77,6 +77,27 @@ export default function TrophyRoom({ animeList, achievements, profile, onDeleteA
   const [consolidate, setConsolidate] = useState(true);
   const completedList = animeList.filter(a => a.status === 'completed');
 
+  const getAuraClassForAnime = (genres: string[], title: string): string => {
+    const titleLower = title.toLowerCase();
+    const genreSet = new Set(genres.map(g => g.toLowerCase()));
+    if (titleLower.includes('chainsaw man')) return 'aura-chainsaw-man';
+    if (titleLower.includes('solo leveling')) return 'aura-solo-leveling';
+    if (genreSet.has('cyberpunk') || titleLower.includes('cyberpunk')) return 'aura-cyberpunk';
+    if (titleLower.includes('demon slayer') || titleLower.includes('kimetsu')) return 'aura-demon-slayer';
+    if (titleLower.includes('jujutsu kaisen') || titleLower.includes('jjk')) return 'aura-jujutsu-kaisen';
+    if (titleLower.includes('bleach')) return 'aura-bleach';
+    if (titleLower.includes('frieren')) return 'aura-frieren';
+    if (titleLower.includes('evangelion') || titleLower.includes('eva')) return 'aura-evangelion';
+    if (genreSet.has('mecha') || genreSet.has('sci-fi')) return 'aura-evangelion';
+    if (genreSet.has('supernatural') || genreSet.has('horror') || genreSet.has('thriller')) return 'aura-jujutsu-kaisen';
+    if (genreSet.has('fantasy') || genreSet.has('adventure')) return 'aura-frieren';
+    if (genreSet.has('drama') || genreSet.has('psychological')) return 'aura-solo-leveling';
+    if (genreSet.has('sports') || genreSet.has('comedy')) return 'aura-chainsaw-man';
+    if (genreSet.has('romance') || genreSet.has('slice of life')) return 'aura-demon-slayer';
+    if (genreSet.has('action')) return 'aura-bleach';
+    return 'aura-normal';
+  };
+
   // Find franchises with at least 2 completed entries
   const completedFranchises = FRANCHISES.filter(franchise => {
     const matchCount = franchise.titles.filter(targetTitle => {
@@ -228,10 +249,12 @@ export default function TrophyRoom({ animeList, achievements, profile, onDeleteA
             })}
 
             {/* Render Individual completed items */}
-            {consolidatedCompletedList.map((anime) => (
+            {consolidatedCompletedList.map((anime) => {
+              const auraClass = getAuraClassForAnime(anime.genres, anime.title);
+              return (
               <div 
                 key={anime.id}
-                className="group relative bg-cyber-gray border border-primary-purple/30 rounded-2xl p-5 flex flex-col justify-between space-y-4 transition-all duration-300 overflow-hidden"
+                className={`group relative bg-cyber-gray border border-primary-purple/30 rounded-2xl p-5 flex flex-col justify-between space-y-4 transition-all duration-300 overflow-hidden ${auraClass}`}
               >
                 {/* Top gradient accent */}
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-purple via-indigo-500 to-neon-blue rounded-t-2xl"></div>
@@ -309,7 +332,8 @@ export default function TrophyRoom({ animeList, achievements, profile, onDeleteA
                   </div>
                 )}
               </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </section>
