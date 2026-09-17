@@ -34,6 +34,42 @@ const FRANCHISES = [
     masterGenre: 'Action',
     masterSynopsis: 'The full journey of Tanjiro Kamado from a coal burner to a seasoned demon slayer, including the Mugen Train arc. Breathing styles fully mastered.',
     masterReview: 'Consolidated franchise compilation: All demons slain, family legacy honored.'
+  },
+  {
+    id: 'sololeveling',
+    name: 'Solo Leveling',
+    titles: [
+      'solo leveling (ore dake',
+      'solo leveling season 2'
+    ],
+    masterTitle: 'Solo Leveling (Complete Saga)',
+    masterGenre: 'Action',
+    masterSynopsis: 'The rise of Sung Jinwoo from the weakest hunter to the Shadow Monarch. From Double Dungeon to the Monarch Wars, every level-up brings absolute power.',
+    masterReview: 'Consolidated franchise compilation: I alone level up.'
+  },
+  {
+    id: 'bleach',
+    name: 'Bleach',
+    titles: [
+      'bleach (16 seasons',
+      'bleach: thousand-year blood war'
+    ],
+    masterTitle: 'Bleach (Complete Saga)',
+    masterGenre: 'Action',
+    masterSynopsis: 'From substitute Shinigami to the Thousand-Year Blood War. Ichigo Kurosaki protects the Living World, Soul Society, and Hueco Mundo. Bankai fully unleashed.',
+    masterReview: 'Consolidated franchise compilation: All arcs mastered, Zanpakuto spirits calmed.'
+  },
+  {
+    id: 'naruto',
+    name: 'Naruto',
+    titles: [
+      'naruto shippuden',
+      'naruto ('
+    ],
+    masterTitle: 'Naruto (Complete Saga)',
+    masterGenre: 'Action',
+    masterSynopsis: 'The complete journey of Naruto Uzumaki from orphaned outcast to Seventh Hokage. Includes the original series and Shippuden through the Fourth Great Ninja War.',
+    masterReview: 'Consolidated franchise compilation: Believe it — the ninja way is complete.'
   }
 ];
 
