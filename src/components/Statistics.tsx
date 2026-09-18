@@ -94,7 +94,7 @@ export default function Statistics({ animeList, profile, watchHistory = [] }: St
       <section className="bg-gradient-to-r from-primary-purple/10 via-neon-blue/5 to-transparent border border-[rgba(139,92,246,0.15)] rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 glass-panel">
         <div className="space-y-2">
           <span className="text-[10px] bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 px-2.5 py-0.5 rounded-full font-black tracking-widest uppercase">
-            Spotify Wrapped Aesthetic
+            Data-Driven Insights
           </span>
           <h2 className="text-2xl md:text-3xl font-black text-white tracking-wide glow-text-purple">
             Your Anime Consumption Profile

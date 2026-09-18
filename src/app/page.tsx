@@ -228,7 +228,8 @@ export default function Home() {
     localStorage.setItem('anifocus_anime', JSON.stringify(updatedAnime));
     localStorage.setItem('anifocus_profile', JSON.stringify(updatedProfile));
     localStorage.setItem('anifocus_achievements', JSON.stringify(updatedAchievements));
-    localStorage.setItem('anifocus_watch_history', JSON.stringify(watchHistory));
+    const currentHistory = JSON.parse(localStorage.getItem('anifocus_watch_history') || '[]');
+    localStorage.setItem('anifocus_watch_history', JSON.stringify(currentHistory));
   };
 
   if (!hasMounted) {
