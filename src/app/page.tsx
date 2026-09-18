@@ -235,10 +235,6 @@ export default function Home() {
     return <div className="min-h-screen bg-cyber-black flex items-center justify-center text-gray-400">Loading Console...</div>;
   }
 
-  if (showLoading) {
-    return <LoadingScreen onComplete={() => setShowLoading(false)} />;
-  }
-
   // 1. XP level up trigger logic
   const addXp = (amount: number, currentProfile: UserProfile, currentAchievements: Achievement[]): { profile: UserProfile; achievements: Achievement[] } => {
     const newXp = currentProfile.xp + amount;
@@ -686,6 +682,8 @@ export default function Home() {
       
       {/* SCANLINES OVERLAY */}
       <div className="absolute inset-0 scanlines pointer-events-none opacity-20"></div>
+
+      {showLoading && <LoadingScreen onComplete={() => setShowLoading(false)} />}
 
       {/* TAB SWITCH BREAK DETECTED BANNER */}
       {tabSwitchAlert && (
