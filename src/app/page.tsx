@@ -682,7 +682,7 @@ export default function Home() {
     : [];
 
   return (
-    <div className="min-h-screen bg-cyber-black text-gray-200 flex flex-col lg:flex-row relative">
+    <div className="min-h-screen bg-cyber-black text-gray-200 flex flex-col lg:flex-row relative animate-[fadeIn_0.8s_ease-out]">
       
       {/* SCANLINES OVERLAY */}
       <div className="absolute inset-0 scanlines pointer-events-none opacity-20"></div>

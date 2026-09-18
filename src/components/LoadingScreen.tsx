@@ -13,7 +13,7 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
   }, [onComplete]);
 
   return (
-    <div className={`fixed inset-0 z-[100] bg-cyber-black flex items-center justify-center overflow-hidden transition-opacity duration-700 ${phase === 'exit' ? 'opacity-0' : 'opacity-100'}`}>
+    <div className={`fixed inset-0 z-[100] bg-cyber-black flex items-center justify-center overflow-hidden transition-all duration-1000 ${phase === 'exit' ? 'opacity-0 scale-105' : 'opacity-100 scale-100'}`}>
       
       {/* Manga Panels */}
       <div className="absolute inset-0">
